@@ -1,4 +1,4 @@
-package veloxapp;
+package veloxapp.manager;
 
 import veloxapp.modelo.Cliente;
 import veloxapp.manager.ClienteManager;
@@ -11,8 +11,9 @@ public class Main {
         String nuevoId = manager.generarNuevoIdCliente();
         Cliente cliente = new Cliente();
         cliente.setIdcliente(nuevoId);
-        cliente.setNombre("Tienda Gamarra 1");
-        cliente.setRuc("20112233445");
+        cliente.setNombre("davluq");
+        cliente.setTienda("Tienda123");       // CAMBIO: era setRuc()
+        cliente.setDistrito("La Victoria");          // NUEVO
         cliente.setDireccion("Av. Gamarra 987");
         cliente.setCelular("912345678");
         cliente.setFecharegistro("2025-07-15");

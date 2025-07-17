@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 public class ClienteForm extends JFrame {
 
-    private final JTextField txtId, txtNombre, txtRuc, txtDireccion, txtCelular, txtFecha;
+    private final JTextField txtId, txtNombre, txtTienda, txtDistrito, txtDireccion, txtCelular, txtFecha;
     private final JButton btnRegistrar, btnLimpiar, btnCerrar;
 
     public ClienteForm() {
@@ -27,7 +27,8 @@ public class ClienteForm extends JFrame {
         txtId.setEditable(false);
 
         txtNombre = new JTextField();
-        txtRuc = new JTextField();
+        txtTienda = new JTextField();
+        txtDistrito = new JTextField();
         txtDireccion = new JTextField();
         txtCelular = new JTextField();
 
@@ -44,8 +45,10 @@ public class ClienteForm extends JFrame {
         panel.add(txtId);
         panel.add(new JLabel("Nombre:"));
         panel.add(txtNombre);
-        panel.add(new JLabel("RUC:"));
-        panel.add(txtRuc);
+        panel.add(new JLabel("Tienda:"));
+        panel.add(txtTienda);
+        panel.add(new JLabel("Distrito:"));
+        panel.add(txtDistrito);
         panel.add(new JLabel("Dirección:"));
         panel.add(txtDireccion);
         panel.add(new JLabel("Celular:"));
@@ -86,7 +89,8 @@ public class ClienteForm extends JFrame {
         Cliente cliente = new Cliente();
         cliente.setIdcliente(txtId.getText());
         cliente.setNombre(txtNombre.getText());
-        cliente.setRuc(txtRuc.getText());
+        cliente.setTienda(txtTienda.getText());
+        cliente.setDistrito(txtDistrito.getText());
         cliente.setDireccion(txtDireccion.getText());
         cliente.setCelular(txtCelular.getText());
         cliente.setFecharegistro(txtFecha.getText());
@@ -106,7 +110,8 @@ public class ClienteForm extends JFrame {
 
     private void limpiarCampos() {
         txtNombre.setText("");
-        txtRuc.setText("");
+        txtTienda.setText("");
+        txtDistrito.setText("");
         txtDireccion.setText("");
         txtCelular.setText("");
     }
