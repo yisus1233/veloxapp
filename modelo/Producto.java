@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 public class Producto {
     private String idproducto;
     private String nombre;
-    private BigDecimal precio; // 🔥 Aquí estaba el problema
+    private BigDecimal precio;
     private int stock;
 
     public String getIdproducto() {
