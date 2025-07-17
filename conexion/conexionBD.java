@@ -7,8 +7,8 @@ import java.sql.SQLException;
 public class conexionBD {
     private static final String URL = "jdbc:sqlserver://veloxserver.database.windows.net:1433;"
             + "database=VELOXAPP;"
-            + "user=admin_velox@veloxserver;"
-            + "password=POOgrupo14;"
+            + "user=admin_velox@veloxserver;"//holis
+            + "password=POOgrupo14;"//hola mundo
             + "encrypt=true;"
             + "trustServerCertificate=false;"
             + "hostNameInCertificate=*.database.windows.net;"
