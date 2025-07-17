@@ -1,13 +1,24 @@
 package veloxapp.modelo;
 
-import java.math.BigDecimal;
-
 public class Producto {
     private String idproducto;
     private String nombre;
-    private BigDecimal precio; // 🔥 Aquí estaba el problema
+    private double precio;
     private int stock;
 
+    // Constructor vacío
+    public Producto() {
+    }
+
+    // Constructor con todos los campos
+    public Producto(String idproducto, String nombre, double precio, int stock) {
+        this.idproducto = idproducto;
+        this.nombre = nombre;
+        this.precio = precio;
+        this.stock = stock;
+    }
+
+    // Getters y Setters
     public String getIdproducto() {
         return idproducto;
     }
@@ -24,11 +35,11 @@ public class Producto {
         this.nombre = nombre;
     }
 
-    public BigDecimal getPrecio() {
+    public double getPrecio() {
         return precio;
     }
 
-    public void setPrecio(BigDecimal precio) {
+    public void setPrecio(double precio) {
         this.precio = precio;
     }
 
