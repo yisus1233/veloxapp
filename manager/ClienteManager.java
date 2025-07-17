@@ -35,44 +35,20 @@ public class ClienteManager {
         return nuevoId;
     }
 
-    // Verificar si el cliente ya está registrado por RUC
-    public boolean clienteExiste(String ruc) {
-        String sql = "SELECT COUNT(*) FROM Cliente WHERE ruc = ?";
-
-        try (Connection conn = conexionBD.conectar();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, ruc);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next() && rs.getInt(1) > 0) {
-                return true;
-            }
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error verificando cliente: " + e.getMessage());
-        }
-
-        return false;
-    }
-
-    // Insertar cliente (si no existe)
+    // Insertar cliente
     public boolean insertarCliente(Cliente cliente) {
-        if (clienteExiste(cliente.getRuc())) {
-            JOptionPane.showMessageDialog(null, "❌ Este cliente ya está registrado.");
-            return false;
-        }
-
-        String sql = "INSERT INTO Cliente (idcliente, nombre, ruc, direccion, celular, fecharegistro) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Cliente (idcliente, nombre, tienda, distrito, direccion, celular, fecharegistro) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = conexionBD.conectar();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, cliente.getIdcliente());
             ps.setString(2, cliente.getNombre());
-            ps.setString(3, cliente.getRuc());
-            ps.setString(4, cliente.getDireccion());
-            ps.setString(5, cliente.getCelular());
-            ps.setString(6, cliente.getFecharegistro());
+            ps.setString(3, cliente.getTienda());
+            ps.setString(4, cliente.getDistrito());
+            ps.setString(5, cliente.getDireccion());
+            ps.setString(6, cliente.getCelular());
+            ps.setString(7, cliente.getFecharegistro());
 
             ps.executeUpdate();
             JOptionPane.showMessageDialog(null, "✅ Cliente registrado correctamente.");
