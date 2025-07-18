@@ -19,35 +19,19 @@ public class Motorizado {
     }
 
     // Getters y setters
-    public String getIdmotorizado() {
-        return idmotorizado;
-    }
+    public String getIdmotorizado() { return idmotorizado; }
 
-    public void setIdmotorizado(String idmotorizado) {
-        this.idmotorizado = idmotorizado;
-    }
+    public void setIdmotorizado(String idmotorizado) { this.idmotorizado = idmotorizado; }
 
-    public String getNombre() {
-        return nombre;
-    }
+    public String getNombre() { return nombre; }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getCelular() {
-        return celular;
-    }
+    public String getCelular() { return celular; }
 
-    public void setCelular(String celular) {
-        this.celular = celular;
-    }
+    public void setCelular(String celular) { this.celular = celular; }
 
-    public String getPlaca() {
-        return placa;
-    }
+    public String getPlaca() { return placa; }
 
-    public void setPlaca(String placa) {
-        this.placa = placa;
-    }
+    public void setPlaca(String placa) { this.placa = placa; }
 }
