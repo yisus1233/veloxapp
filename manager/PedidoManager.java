@@ -31,7 +31,7 @@ public class PedidoManager {
     }
 
     public String generarNuevoIdPedido() {
-        String nuevoId = "PED001";  // Default
+        String nuevoId = "PE001";  // Default
         String sql = "SELECT TOP 1 idpedido FROM Pedido ORDER BY idpedido DESC";
 
         try (Connection conn = conexionBD.conectar();
@@ -39,9 +39,9 @@ public class PedidoManager {
              ResultSet rs = stmt.executeQuery()) {
 
             if (rs.next()) {
-                String ultimoId = rs.getString("idpedido").replace("PED", "");
+                String ultimoId = rs.getString("idpedido").replace("PE", "");
                 int idNum = Integer.parseInt(ultimoId) + 1;
-                nuevoId = String.format("PED%03d", idNum);
+                nuevoId = String.format("PE%03d", idNum);
             }
 
         } catch (Exception e) {
