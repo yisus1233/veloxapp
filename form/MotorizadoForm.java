@@ -3,51 +3,86 @@ package veloxapp.form;
 import veloxapp.modelo.Motorizado;
 import veloxapp.manager.MotorizadoManager;
 
-
 import javax.swing.*;
 import java.awt.*;
 
 public class MotorizadoForm extends JFrame {
 
-    private final JTextField txtId, txtNombre, txtCelular, txtPlaca;
+    private final JTextField txtId, txtCelular, txtPlaca;
+    private final JComboBox<String> comboNombre;
     private final JButton btnRegistrar, btnLimpiar, btnCerrar;
+
+    private final String[] nombresMotorizados = {
+            "DANI", "DANIELA", "ISMAEL", "JOSE", "LUIS", "ALEX",
+            "HENRRY", "DIEGO", "AMIEL", "PABLO", "ALEXANDER", " "
+    };
 
     public MotorizadoForm() {
         setTitle("Registro de Motorizado");
-        setSize(400, 300);
+        setSize(500, 300);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
 
-        JPanel panel = new JPanel(new GridLayout(5, 2, 10, 10));
+        JPanel panel = new JPanel(new GridBagLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 10, 5, 10);
+        gbc.anchor = GridBagConstraints.WEST;
 
-        // Campos de texto
-        txtId = new JTextField();
+        // Campos
+        txtId = new JTextField(15);
         txtId.setEditable(false);
 
-        txtNombre = new JTextField();
-        txtCelular = new JTextField();
-        txtPlaca = new JTextField();
+        comboNombre = new JComboBox<>(nombresMotorizados);
+        txtCelular = new JTextField(15);
+        txtPlaca = new JTextField(15);
 
         // Botones
         btnRegistrar = new JButton("Registrar");
         btnLimpiar = new JButton("Limpiar");
         btnCerrar = new JButton("Cerrar");
 
-        // Añadir componentes
-        panel.add(new JLabel("ID Motorizado:"));
-        panel.add(txtId);
-        panel.add(new JLabel("Nombre:"));
-        panel.add(txtNombre);
-        panel.add(new JLabel("Celular:"));
-        panel.add(txtCelular);
-        panel.add(new JLabel("Placa:"));
-        panel.add(txtPlaca);
-        panel.add(btnRegistrar);
-        panel.add(btnLimpiar);
-        panel.add(new JLabel()); // espacio vacío
-        panel.add(btnCerrar);
+        int y = 0;
+
+        // Fila 1 - ID
+        gbc.gridx = 0; gbc.gridy = y;
+        panel.add(new JLabel("ID Motorizado:"), gbc);
+        gbc.gridx = 1;
+        panel.add(txtId, gbc);
+        y++;
+
+        // Fila 2 - Nombre
+        gbc.gridx = 0; gbc.gridy = y;
+        panel.add(new JLabel("Nombre:"), gbc);
+        gbc.gridx = 1;
+        panel.add(comboNombre, gbc);
+        y++;
+
+        // Fila 3 - Celular
+        gbc.gridx = 0; gbc.gridy = y;
+        panel.add(new JLabel("Celular:"), gbc);
+        gbc.gridx = 1;
+        panel.add(txtCelular, gbc);
+        y++;
+
+        // Fila 4 - Placa
+        gbc.gridx = 0; gbc.gridy = y;
+        panel.add(new JLabel("Placa:"), gbc);
+        gbc.gridx = 1;
+        panel.add(txtPlaca, gbc);
+        y++;
+
+        // Fila 5 - Botones
+        gbc.gridx = 0; gbc.gridy = y;
+        panel.add(btnRegistrar, gbc);
+        gbc.gridx = 1;
+        panel.add(btnLimpiar, gbc);
+        y++;
+
+        // Fila 6 - Botón Cerrar
+        gbc.gridx = 0; gbc.gridy = y; gbc.gridwidth = 2; gbc.anchor = GridBagConstraints.CENTER;
+        panel.add(btnCerrar, gbc);
 
         add(panel);
 
@@ -71,7 +106,7 @@ public class MotorizadoForm extends JFrame {
     private void registrarMotorizado() {
         Motorizado motorizado = new Motorizado();
         motorizado.setIdmotorizado(txtId.getText());
-        motorizado.setNombre(txtNombre.getText());
+        motorizado.setNombre((String) comboNombre.getSelectedItem());
         motorizado.setCelular(txtCelular.getText());
         motorizado.setPlaca(txtPlaca.getText());
 
@@ -88,7 +123,7 @@ public class MotorizadoForm extends JFrame {
     }
 
     private void limpiarCampos() {
-        txtNombre.setText("");
+        comboNombre.setSelectedIndex(0);
         txtCelular.setText("");
         txtPlaca.setText("");
     }

@@ -1,10 +1,18 @@
 package veloxapp.pruebas;
 
-import veloxapp.form.PedidoForm;
+import veloxapp.form.ProductoForm;
+import javax.swing.UIManager;
 
 public class Main {
     public static void main(String[] args) {
-        PedidoForm ventana = new PedidoForm();
+        try {
+            // Usar el estilo del sistema operativo
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            System.out.println("No se pudo aplicar el estilo visual.");
+        }
+
+        ProductoForm ventana = new ProductoForm();
         ventana.setVisible(true);
     }
 }
