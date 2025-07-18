@@ -4,18 +4,18 @@ public class Producto {
     private String idproducto;
     private String nombre;
     private double precio;
-    private int stock;
+    private String Tamaño;
 
     // Constructor vacío
     public Producto() {
     }
 
     // Constructor con todos los campos
-    public Producto(String idproducto, String nombre, double precio, int stock) {
+    public Producto(String idproducto, String nombre, double precio, String tamaño) {
         this.idproducto = idproducto;
         this.nombre = nombre;
         this.precio = precio;
-        this.stock = stock;
+        this.Tamaño = tamaño;
     }
 
     // Getters y Setters
@@ -43,11 +43,7 @@ public class Producto {
         this.precio = precio;
     }
 
-    public int getStock() {
-        return stock;
-    }
+    public String getTamaño() { return Tamaño; }
 
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
+    public void setTamaño(String tamaño) { this.Tamaño = tamaño; }
 }

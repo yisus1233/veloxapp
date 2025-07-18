@@ -60,7 +60,7 @@ public class ProductoManager {
             return false;
         }
 
-        String sql = "INSERT INTO Producto (idproducto, nombre, precio, stock) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Producto (idproducto, nombre, precio, tamaño) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = conexionBD.conectar();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -68,7 +68,7 @@ public class ProductoManager {
             ps.setString(1, producto.getIdproducto());
             ps.setString(2, producto.getNombre());
             ps.setDouble(3, producto.getPrecio());
-            ps.setInt(4, producto.getStock());
+            ps.setString(4, producto.getTamaño());
 
             ps.executeUpdate();
             JOptionPane.showMessageDialog(null, "✅ Producto registrado correctamente.");

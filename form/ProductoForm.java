@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class ProductoForm extends JFrame {
 
-    private final JTextField txtId, txtNombre, txtPrecio, txtStock;
+    private final JTextField txtId, txtNombre, txtPrecio, txtTamaño;
     private final JButton btnRegistrar, btnLimpiar, btnCerrar;
 
     public ProductoForm() {
@@ -27,7 +27,7 @@ public class ProductoForm extends JFrame {
 
         txtNombre = new JTextField();
         txtPrecio = new JTextField();
-        txtStock = new JTextField();
+        txtTamaño = new JTextField();
 
         // Botones
         btnRegistrar = new JButton("Registrar");
@@ -41,8 +41,8 @@ public class ProductoForm extends JFrame {
         panel.add(txtNombre);
         panel.add(new JLabel("Precio:"));
         panel.add(txtPrecio);
-        panel.add(new JLabel("Stock:"));
-        panel.add(txtStock);
+        panel.add(new JLabel("Tamaño:"));
+        panel.add(txtTamaño);
         panel.add(btnRegistrar);
         panel.add(btnLimpiar);
         panel.add(new JLabel()); // Espacio vacío
@@ -73,7 +73,7 @@ public class ProductoForm extends JFrame {
             producto.setIdproducto(txtId.getText());
             producto.setNombre(txtNombre.getText());
             producto.setPrecio(Double.parseDouble(txtPrecio.getText()));
-            producto.setStock(Integer.parseInt(txtStock.getText()));
+            producto.setTamaño(txtTamaño.getText());
 
             ProductoManager manager = new ProductoManager();
             boolean exito = manager.registrarProducto(producto);
@@ -84,13 +84,13 @@ public class ProductoForm extends JFrame {
                 generarNuevoId();
             }
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "⚠️ Ingrese valores válidos en precio y stock.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "⚠️ Ingrese valores válidos en precio y tamaño.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void limpiarCampos() {
         txtNombre.setText("");
         txtPrecio.setText("");
-        txtStock.setText("");
+        txtTamaño.setText("");
     }
 }
