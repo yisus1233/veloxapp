@@ -1,6 +1,6 @@
 package veloxapp.pruebas;
 
-import veloxapp.form.PedidoForm;
+import veloxapp.form.DetallePedidoForm;
 import javax.swing.UIManager;
 
 public class Main {
@@ -12,7 +12,7 @@ public class Main {
             System.out.println("No se pudo aplicar el estilo visual.");
         }
 
-        PedidoForm ventana = new PedidoForm();
+        DetallePedidoForm ventana = new DetallePedidoForm();
         ventana.setVisible(true);
     }
 }
