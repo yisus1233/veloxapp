@@ -1,4 +1,4 @@
-package veloxapp.pruebas;
+package pruebas;
 
 import veloxapp.form.MotorizadoForm;
 
