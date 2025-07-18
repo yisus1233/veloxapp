@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -60,4 +62,26 @@ public class ClienteManager {
 
         return false;
     }
+
+    public List<String> obtenerIdsClientes() {
+        List<String> ids = new ArrayList<>();
+        String sql = "SELECT idcliente FROM Cliente";
+
+        try (Connection conn = conexionBD.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                ids.add(rs.getString("idcliente"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("❌ Error al obtener IDs de clientes: " + e.getMessage());
+        }
+
+        return ids;
+    }
+
+
+
 }
