@@ -66,7 +66,7 @@ public class ClienteForm extends JFrame {
         cargarFechaActual();
 
         // Acciones
-        btnRegistrar.addActionListener(e -> registrarCliente());
+        btnRegistrar.addActionListener(e ->     registrarCliente());
         btnLimpiar.addActionListener(e -> {
             limpiarCampos();
             generarNuevoId();
