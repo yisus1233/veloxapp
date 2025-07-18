@@ -1,10 +1,10 @@
 package veloxapp.pruebas;
 
-import veloxapp.form.MotorizadoForm;
+import veloxapp.form.PedidoForm;
 
 public class Main {
     public static void main(String[] args) {
-        MotorizadoForm ventana = new MotorizadoForm();
+        PedidoForm ventana = new PedidoForm();
         ventana.setVisible(true);
     }
 }
