@@ -7,8 +7,7 @@ public class DetallePedido {
     private int cantidad;
     private double subtotal;
 
-    public DetallePedido() {
-    }
+    public DetallePedido() {}
 
     public DetallePedido(String iddetalle, String idpedido, String idproducto, int cantidad, double subtotal) {
         this.iddetalle = iddetalle;

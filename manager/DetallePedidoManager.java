@@ -21,7 +21,7 @@ public class DetallePedidoManager {
              ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 String ultimoId = rs.getString("iddetalle");
-                int numero = Integer.parseInt(ultimoId.substring(1)) + 1;
+                int numero = Integer.parseInt(ultimoId.substring(2)) + 1; // CORREGIDO
                 nuevoId = String.format("DP%03d", numero);
             }
         } catch (Exception e) {
@@ -60,9 +60,13 @@ public class DetallePedidoManager {
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) { ids.add(rs.getString("idpedido")); }
+            while (rs.next()) {
+                ids.add(rs.getString("idpedido"));
+            }
 
-        } catch (Exception e) { System.out.println("Error obteniendo pedidos: " + e.getMessage()); }
+        } catch (Exception e) {
+            System.out.println("Error obteniendo pedidos: " + e.getMessage());
+        }
 
         return ids;
     }
