@@ -75,7 +75,7 @@ public class PedidoForm extends JFrame {
 
         btnSiguiente.addActionListener(e -> {
             if (pedidoRegistrado) {
-                new DetallePedidoForm().setVisible(true);
+                new veloxapp.form.DetallePedidoForm().setVisible(true);
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "⚠️ Primero registre el pedido antes de continuar.");
@@ -117,7 +117,7 @@ public class PedidoForm extends JFrame {
                 pedidoRegistrado = true;
 
                 // Abrir DetallePedidoForm automáticamente
-                new DetallePedidoForm().setVisible(true);
+                new veloxapp.form.DetallePedidoForm().setVisible(true);
                 dispose();
             }
 
