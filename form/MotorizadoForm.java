@@ -10,7 +10,9 @@ public class MotorizadoForm extends JFrame {
 
     private final JTextField txtId, txtCelular, txtPlaca;
     private final JComboBox<String> comboNombre;
-    private final JButton btnRegistrar, btnLimpiar, btnCerrar;
+    private final JButton btnRegistrar, btnLimpiar, btnCerrar, btnSiguiente;
+
+    private boolean motorizadoRegistrado = false;
 
     private final String[] nombresMotorizados = {
             "DANI", "DANIELA", "ISMAEL", "JOSE", "LUIS", "ALEX",
@@ -30,7 +32,6 @@ public class MotorizadoForm extends JFrame {
         gbc.insets = new Insets(5, 10, 5, 10);
         gbc.anchor = GridBagConstraints.WEST;
 
-        // Campos
         txtId = new JTextField(15);
         txtId.setEditable(false);
 
@@ -38,51 +39,54 @@ public class MotorizadoForm extends JFrame {
         txtCelular = new JTextField(15);
         txtPlaca = new JTextField(15);
 
-        // Botones
         btnRegistrar = new JButton("Registrar");
         btnLimpiar = new JButton("Limpiar");
         btnCerrar = new JButton("Cerrar");
+        btnSiguiente = new JButton("Siguiente");
 
         int y = 0;
 
-        // Fila 1 - ID
+        // ID
         gbc.gridx = 0; gbc.gridy = y;
         panel.add(new JLabel("ID Motorizado:"), gbc);
         gbc.gridx = 1;
         panel.add(txtId, gbc);
         y++;
 
-        // Fila 2 - Nombre
+        // Nombre
         gbc.gridx = 0; gbc.gridy = y;
         panel.add(new JLabel("Nombre:"), gbc);
         gbc.gridx = 1;
         panel.add(comboNombre, gbc);
         y++;
 
-        // Fila 3 - Celular
+        // Celular
         gbc.gridx = 0; gbc.gridy = y;
         panel.add(new JLabel("Celular:"), gbc);
         gbc.gridx = 1;
         panel.add(txtCelular, gbc);
         y++;
 
-        // Fila 4 - Placa
+        // Placa
         gbc.gridx = 0; gbc.gridy = y;
         panel.add(new JLabel("Placa:"), gbc);
         gbc.gridx = 1;
         panel.add(txtPlaca, gbc);
         y++;
 
-        // Fila 5 - Botones
+        // Botones Registrar y Limpiar
         gbc.gridx = 0; gbc.gridy = y;
         panel.add(btnRegistrar, gbc);
         gbc.gridx = 1;
         panel.add(btnLimpiar, gbc);
         y++;
 
-        // Fila 6 - Botón Cerrar
+        // Botones Cerrar y Siguiente
         gbc.gridx = 0; gbc.gridy = y; gbc.gridwidth = 2; gbc.anchor = GridBagConstraints.CENTER;
-        panel.add(btnCerrar, gbc);
+        JPanel bottomPanel = new JPanel(new FlowLayout());
+        bottomPanel.add(btnSiguiente);
+        bottomPanel.add(btnCerrar);
+        panel.add(bottomPanel, gbc);
 
         add(panel);
 
@@ -95,6 +99,15 @@ public class MotorizadoForm extends JFrame {
             generarNuevoId();
         });
         btnCerrar.addActionListener(e -> dispose());
+
+        btnSiguiente.addActionListener(e -> {
+            if (motorizadoRegistrado) {
+                new veloxapp.form.ProductoForm().setVisible(true);
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "⚠️ Primero registre el motorizado antes de continuar.");
+            }
+        });
     }
 
     private void generarNuevoId() {
@@ -115,6 +128,7 @@ public class MotorizadoForm extends JFrame {
 
         if (exito) {
             JOptionPane.showMessageDialog(this, "✅ Motorizado registrado con éxito.");
+            motorizadoRegistrado = true;
             limpiarCampos();
             generarNuevoId();
         } else {

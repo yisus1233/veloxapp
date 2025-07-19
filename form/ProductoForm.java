@@ -7,39 +7,88 @@ import java.awt.*;
 import java.sql.*;
 
 public class ProductoForm extends JFrame {
+
     private JTextField txtId, txtNombre, txtPrecio;
     private JComboBox<String> comboTamaño;
-    private JButton btnRegistrar;
+    private JButton btnRegistrar, btnSiguiente, btnCerrar;
+
+    private boolean productoRegistrado = false;
 
     public ProductoForm() {
         setTitle("Registro de Producto");
-        setSize(400, 300);
+        setSize(500, 300);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new GridLayout(5, 2, 10, 10));
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
 
-        txtId = new JTextField();
-        txtNombre = new JTextField();
-        txtPrecio = new JTextField();
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 10, 8, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        txtId = new JTextField(20);
+        txtId.setEditable(false);
+        txtNombre = new JTextField(20);
+        txtPrecio = new JTextField(20);
         txtPrecio.setEditable(false);
 
         comboTamaño = new JComboBox<>(new String[]{"Pequeño", "Mediano", "Grande"});
         comboTamaño.addActionListener(e -> calcularPrecioPorDistritoYTamaño());
 
         btnRegistrar = new JButton("Registrar");
-        btnRegistrar.addActionListener(e -> registrarProducto());
+        btnSiguiente = new JButton("Siguiente");
+        btnCerrar = new JButton("Cerrar");
 
-        add(new JLabel("ID Producto:"));
-        add(txtId);
-        add(new JLabel("Nombre:"));
-        add(txtNombre);
-        add(new JLabel("Tamaño:"));
-        add(comboTamaño);
-        add(new JLabel("Precio:"));
-        add(txtPrecio);
-        add(btnRegistrar);
+        // Fila 1 - ID
+        gbc.gridx = 0; gbc.gridy = 0;
+        panel.add(new JLabel("ID Producto:"), gbc);
+        gbc.gridx = 1;
+        panel.add(txtId, gbc);
+
+        // Fila 2 - Nombre
+        gbc.gridx = 0; gbc.gridy = 1;
+        panel.add(new JLabel("Nombre:"), gbc);
+        gbc.gridx = 1;
+        panel.add(txtNombre, gbc);
+
+        // Fila 3 - Tamaño
+        gbc.gridx = 0; gbc.gridy = 2;
+        panel.add(new JLabel("Tamaño:"), gbc);
+        gbc.gridx = 1;
+        panel.add(comboTamaño, gbc);
+
+        // Fila 4 - Precio
+        gbc.gridx = 0; gbc.gridy = 3;
+        panel.add(new JLabel("Precio:"), gbc);
+        gbc.gridx = 1;
+        panel.add(txtPrecio, gbc);
+
+        // Fila 5 - Botones Registrar y Siguiente
+        gbc.gridx = 0; gbc.gridy = 4;
+        panel.add(btnRegistrar, gbc);
+        gbc.gridx = 1;
+        panel.add(btnSiguiente, gbc);
+
+        // Fila 6 - Cerrar
+        gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        panel.add(btnCerrar, gbc);
+
+        add(panel);
 
         generarNuevoId();
+
+        // Eventos
+        btnRegistrar.addActionListener(e -> registrarProducto());
+        btnSiguiente.addActionListener(e -> {
+            if (productoRegistrado) {
+                new veloxapp.form.PedidoForm().setVisible(true);
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "⚠️ Primero registre el producto antes de continuar.");
+            }
+        });
+        btnCerrar.addActionListener(e -> dispose());
     }
 
     private void generarNuevoId() {
@@ -122,10 +171,10 @@ public class ProductoForm extends JFrame {
             ps.setString(3, (String) comboTamaño.getSelectedItem());
             ps.setDouble(4, Double.parseDouble(txtPrecio.getText()));
             ps.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Producto registrado exitosamente.");
-            dispose();
+            JOptionPane.showMessageDialog(this, "✅ Producto registrado exitosamente.");
+            productoRegistrado = true;
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al registrar producto: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "❌ Error al registrar producto: " + e.getMessage());
         }
     }
 }

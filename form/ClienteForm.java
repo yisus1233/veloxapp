@@ -134,12 +134,12 @@ public class ClienteForm extends JFrame {
         });
         btnCerrar.addActionListener(e -> dispose());
 
+        // 🔁 ACTUALIZADO: secuencia al formulario MotorizadoForm
         btnSiguiente.addActionListener(e -> {
             if (!clienteRegistrado) {
                 JOptionPane.showMessageDialog(this, "⚠️ Primero debes registrar al cliente.");
             } else {
-                veloxapp.form.PedidoForm pedidoForm = new veloxapp.form.PedidoForm();
-               pedidoForm.setVisible(true);
+                new MotorizadoForm().setVisible(true);
                 dispose();
             }
         });
@@ -187,7 +187,6 @@ public class ClienteForm extends JFrame {
         txtCelular.setText("");
     }
 
-    // Clase interna para representar distritos con valor oculto
     private static class DistritoItem {
         private final String nombre;
         private final int costoEnvio;

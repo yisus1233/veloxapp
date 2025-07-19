@@ -14,11 +14,11 @@ public class EntregaForm extends JFrame {
 
     private final JTextField txtId;
     private final JComboBox<String> comboPedido, comboMotorizado, comboEstado;
-    private final JButton btnRegistrar, btnLimpiar, btnCerrar;
+    private final JButton btnRegistrar, btnLimpiar, btnCerrar, btnInicio;
 
     public EntregaForm() {
         setTitle("Registro de Entrega");
-        setSize(500, 250);
+        setSize(500, 270);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
@@ -38,6 +38,7 @@ public class EntregaForm extends JFrame {
         btnRegistrar = new JButton("Registrar");
         btnLimpiar = new JButton("Limpiar");
         btnCerrar = new JButton("Cerrar");
+        btnInicio = new JButton("Volver al Inicio");
 
         // Fila 1
         gbc.gridx = 0; gbc.gridy = 0;
@@ -61,10 +62,11 @@ public class EntregaForm extends JFrame {
 
         // Fila 3 - Botones
         gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 4;
-        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
         btnPanel.add(btnRegistrar);
         btnPanel.add(btnLimpiar);
         btnPanel.add(btnCerrar);
+        btnPanel.add(btnInicio); // Nuevo botón
         panel.add(btnPanel, gbc);
 
         add(panel);
@@ -78,6 +80,13 @@ public class EntregaForm extends JFrame {
             generarNuevoId();
         });
         btnCerrar.addActionListener(e -> dispose());
+
+        // Nuevo botón para reiniciar el flujo
+        btnInicio.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, "🔁 Iniciando nuevo flujo desde Cliente.");
+            new ClienteForm().setVisible(true);
+            dispose();
+        });
     }
 
     private void cargarCombos() {
@@ -103,7 +112,7 @@ public class EntregaForm extends JFrame {
 
             EntregaManager manager = new EntregaManager();
             if (manager.insertarEntrega(entrega)) {
-                JOptionPane.showMessageDialog(this, "✅ Entrega registrada con éxito.");
+                JOptionPane.showMessageDialog(this, "✅ Entrega registrada con éxito. Fin del proceso.");
                 limpiarCampos();
                 generarNuevoId();
             } else {

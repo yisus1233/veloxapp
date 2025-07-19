@@ -11,32 +11,31 @@ public class DetallePedidoForm extends JFrame {
 
     private final JTextField txtId, txtCantidad, txtSubtotal;
     private final JComboBox<String> comboPedido, comboProducto;
-    private final JButton btnRegistrar, btnLimpiar, btnCerrar;
+    private final JButton btnRegistrar, btnLimpiar, btnCerrar, btnSiguiente;
 
     public DetallePedidoForm() {
         setTitle("Registro de Detalle de Pedido");
-        setSize(500, 320);
+        setSize(550, 360);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
 
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        txtId = new JTextField();
-        txtId.setEditable(false);
-
+        txtId = new JTextField(); txtId.setEditable(false);
         comboPedido = new JComboBox<>();
         comboProducto = new JComboBox<>();
         txtCantidad = new JTextField();
-        txtSubtotal = new JTextField();
+        txtSubtotal = new JTextField(); txtSubtotal.setEditable(false);
 
         btnRegistrar = new JButton("Registrar");
         btnLimpiar = new JButton("Limpiar");
         btnCerrar = new JButton("Cerrar");
+        btnSiguiente = new JButton("Siguiente");
 
         // Fila 1
         gbc.gridx = 0; gbc.gridy = 0;
@@ -64,7 +63,7 @@ public class DetallePedidoForm extends JFrame {
         gbc.gridx = 3;
         panel.add(txtSubtotal, gbc);
 
-        // Fila 4
+        // Fila 4 - Botones principales
         gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 4;
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
         btnPanel.add(btnRegistrar);
@@ -72,21 +71,32 @@ public class DetallePedidoForm extends JFrame {
         btnPanel.add(btnCerrar);
         panel.add(btnPanel, gbc);
 
+        // Fila 5 - Botón siguiente
+        gbc.gridy = 4;
+        JPanel siguientePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        siguientePanel.add(btnSiguiente);
+        panel.add(siguientePanel, gbc);
+
         add(panel);
 
         cargarDatos();
         generarNuevoId();
 
+        // Eventos
         btnRegistrar.addActionListener(e -> registrarDetalle());
         btnLimpiar.addActionListener(e -> {
             limpiarCampos();
             generarNuevoId();
         });
         btnCerrar.addActionListener(e -> dispose());
+        btnSiguiente.addActionListener(e -> {
+            new EntregaForm().setVisible(true);
+            dispose();
+        });
+
         comboProducto.addActionListener(e -> calcularPrecio());
         comboPedido.addActionListener(e -> calcularPrecio());
         txtCantidad.addCaretListener(e -> calcularPrecio());
-
     }
 
     private void cargarDatos() {
@@ -117,8 +127,10 @@ public class DetallePedidoForm extends JFrame {
             DetallePedidoManager manager = new DetallePedidoManager();
             if (manager.insertarDetalle(detalle)) {
                 JOptionPane.showMessageDialog(this, "✅ Detalle registrado con éxito.");
-                limpiarCampos();
-                generarNuevoId();
+
+                // Abrir Entrega automáticamente
+                new EntregaForm().setVisible(true);
+                dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "❌ Error al registrar.", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -126,6 +138,7 @@ public class DetallePedidoForm extends JFrame {
             JOptionPane.showMessageDialog(this, "⚠️ Datos inválidos. Revise los campos.", "Advertencia", JOptionPane.WARNING_MESSAGE);
         }
     }
+
     private void calcularPrecio() {
         try {
             String idpedido = (String) comboPedido.getSelectedItem();
@@ -136,11 +149,9 @@ public class DetallePedidoForm extends JFrame {
                 return;
             }
 
-            // Obtener el ID del cliente a partir del pedido
             DetallePedidoManager manager = new DetallePedidoManager();
             String idcliente = manager.obtenerIdClientePorPedido(idpedido);
 
-            // Calcular precio usando fórmula
             double precioUnitario = CalculadoraPrecio.obtenerPrecio(idcliente, idproducto);
             int cantidad = Integer.parseInt(txtCantidad.getText());
             double subtotal = precioUnitario * cantidad;
