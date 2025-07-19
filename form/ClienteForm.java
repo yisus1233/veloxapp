@@ -12,7 +12,9 @@ public class ClienteForm extends JFrame {
     private final JTextField txtId, txtNombre, txtDireccion, txtCelular, txtFecha;
     private final JComboBox<String> comboTienda;
     private final JComboBox<DistritoItem> comboDistrito;
-    private final JButton btnRegistrar, btnLimpiar, btnCerrar;
+    private final JButton btnRegistrar, btnLimpiar, btnCerrar, btnSiguiente;
+
+    private boolean clienteRegistrado = false;
 
     private final String[] tiendas = {
             "AMATE", "ATLANTIS", "BEAUTY", "FITBELLA", "HND", "LIBERTY", "MEN LAD", "RIVAS", "THIFAS",
@@ -46,7 +48,7 @@ public class ClienteForm extends JFrame {
 
     public ClienteForm() {
         setTitle("Registro de Cliente");
-        setSize(550, 400);
+        setSize(600, 400);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
@@ -56,6 +58,7 @@ public class ClienteForm extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 10, 5, 10);
         gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         txtId = new JTextField(15); txtId.setEditable(false);
         txtNombre = new JTextField(15);
@@ -69,6 +72,7 @@ public class ClienteForm extends JFrame {
         btnRegistrar = new JButton("Registrar");
         btnLimpiar = new JButton("Limpiar");
         btnCerrar = new JButton("Cerrar");
+        btnSiguiente = new JButton("Siguiente");
 
         int y = 0;
         gbc.gridx = 0; gbc.gridy = y;
@@ -112,8 +116,9 @@ public class ClienteForm extends JFrame {
         gbc.gridx = 1;
         panel.add(btnLimpiar, gbc);
         gbc.gridx = 2;
-        gbc.gridwidth = 2;
         panel.add(btnCerrar, gbc);
+        gbc.gridx = 3;
+        panel.add(btnSiguiente, gbc);
 
         add(panel);
 
@@ -125,8 +130,19 @@ public class ClienteForm extends JFrame {
             limpiarCampos();
             generarNuevoId();
             cargarFechaActual();
+            clienteRegistrado = false;
         });
         btnCerrar.addActionListener(e -> dispose());
+
+        btnSiguiente.addActionListener(e -> {
+            if (!clienteRegistrado) {
+                JOptionPane.showMessageDialog(this, "⚠️ Primero debes registrar al cliente.");
+            } else {
+                veloxapp.form.PedidoForm pedidoForm = new veloxapp.form.PedidoForm();
+               pedidoForm.setVisible(true);
+                dispose();
+            }
+        });
     }
 
     private void generarNuevoId() {
@@ -156,10 +172,8 @@ public class ClienteForm extends JFrame {
         boolean exito = manager.insertarCliente(cliente);
 
         if (exito) {
+            clienteRegistrado = true;
             JOptionPane.showMessageDialog(this, "✅ Cliente registrado con éxito.");
-            limpiarCampos();
-            generarNuevoId();
-            cargarFechaActual();
         } else {
             JOptionPane.showMessageDialog(this, "⚠️ El cliente ya está registrado.", "Advertencia", JOptionPane.WARNING_MESSAGE);
         }

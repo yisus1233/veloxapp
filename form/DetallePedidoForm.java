@@ -2,6 +2,7 @@ package veloxapp.form;
 
 import veloxapp.manager.DetallePedidoManager;
 import veloxapp.modelo.DetallePedido;
+import veloxapp.formulas.CalculadoraPrecio;
 
 import javax.swing.*;
 import java.awt.*;
@@ -83,6 +84,10 @@ public class DetallePedidoForm extends JFrame {
             generarNuevoId();
         });
         btnCerrar.addActionListener(e -> dispose());
+        comboProducto.addActionListener(e -> calcularPrecio());
+        comboPedido.addActionListener(e -> calcularPrecio());
+        txtCantidad.addCaretListener(e -> calcularPrecio());
+
     }
 
     private void cargarDatos() {
@@ -115,6 +120,30 @@ public class DetallePedidoForm extends JFrame {
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "⚠️ Datos inválidos. Revise los campos.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+    private void calcularPrecio() {
+        try {
+            String idpedido = (String) comboPedido.getSelectedItem();
+            String idproducto = (String) comboProducto.getSelectedItem();
+
+            if (idpedido == null || idproducto == null || txtCantidad.getText().isEmpty()) {
+                txtSubtotal.setText("");
+                return;
+            }
+
+            // Obtener el ID del cliente a partir del pedido
+            DetallePedidoManager manager = new DetallePedidoManager();
+            String idcliente = manager.obtenerIdClientePorPedido(idpedido);
+
+            // Calcular precio usando fórmula
+            double precioUnitario = CalculadoraPrecio.obtenerPrecio(idcliente, idproducto);
+            int cantidad = Integer.parseInt(txtCantidad.getText());
+            double subtotal = precioUnitario * cantidad;
+
+            txtSubtotal.setText(String.format("%.2f", subtotal));
+        } catch (Exception ex) {
+            txtSubtotal.setText("0.00");
         }
     }
 
