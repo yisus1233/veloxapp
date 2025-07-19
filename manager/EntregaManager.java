@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 public class EntregaManager {
 
     public String generarNuevoIdEntrega() {
-        String nuevoId = "E001";
+        String nuevoId = "EN001";
         String sql = "SELECT TOP 1 identrega FROM Entrega ORDER BY identrega DESC";
 
         try (Connection conn = conexionBD.conectar();
@@ -19,9 +19,10 @@ public class EntregaManager {
              ResultSet rs = ps.executeQuery()) {
 
             if (rs.next()) {
-                String ultimoId = rs.getString("identrega");
-                int numero = Integer.parseInt(ultimoId.substring(1)) + 1;
-                nuevoId = String.format("E%03d", numero);
+                String ultimoId = rs.getString("identrega"); // por ejemplo: "EN007"
+                int numero = Integer.parseInt(ultimoId.substring(2)); // extrae "007"
+                numero++;
+                nuevoId = String.format("EN%03d", numero); // genera "EN008"
             }
 
         } catch (Exception e) {

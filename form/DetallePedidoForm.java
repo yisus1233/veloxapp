@@ -6,7 +6,6 @@ import veloxapp.formulas.CalculadoraPrecio;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 
 public class DetallePedidoForm extends JFrame {
 
@@ -39,7 +38,7 @@ public class DetallePedidoForm extends JFrame {
         btnLimpiar = new JButton("Limpiar");
         btnCerrar = new JButton("Cerrar");
 
-        // Fila 1: ID Detalle y ID Pedido
+        // Fila 1
         gbc.gridx = 0; gbc.gridy = 0;
         panel.add(new JLabel("ID Detalle:"), gbc);
         gbc.gridx = 1;
@@ -49,13 +48,13 @@ public class DetallePedidoForm extends JFrame {
         gbc.gridx = 3;
         panel.add(comboPedido, gbc);
 
-        // Fila 2: ID Producto
+        // Fila 2
         gbc.gridx = 0; gbc.gridy = 1;
         panel.add(new JLabel("ID Producto:"), gbc);
         gbc.gridx = 1;
         panel.add(comboProducto, gbc);
 
-        // Fila 3: Cantidad y Subtotal
+        // Fila 3
         gbc.gridx = 0; gbc.gridy = 2;
         panel.add(new JLabel("Cantidad:"), gbc);
         gbc.gridx = 1;
@@ -65,7 +64,7 @@ public class DetallePedidoForm extends JFrame {
         gbc.gridx = 3;
         panel.add(txtSubtotal, gbc);
 
-        // Fila 4: Botones
+        // Fila 4
         gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 4;
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
         btnPanel.add(btnRegistrar);
@@ -103,6 +102,11 @@ public class DetallePedidoForm extends JFrame {
 
     private void registrarDetalle() {
         try {
+            if (txtCantidad.getText().trim().isEmpty() || txtSubtotal.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "⚠️ Todos los campos deben estar llenos.");
+                return;
+            }
+
             DetallePedido detalle = new DetallePedido();
             detalle.setIddetalle(txtId.getText());
             detalle.setIdpedido((String) comboPedido.getSelectedItem());

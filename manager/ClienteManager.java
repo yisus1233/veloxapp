@@ -1,17 +1,12 @@
 package veloxapp.manager;
 
 import veloxapp.conexion.conexionBD;
-import veloxapp.conexion.conexionBD;
 import veloxapp.modelo.Cliente;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.swing.*;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JOptionPane;
 
 public class ClienteManager {
 
@@ -31,15 +26,16 @@ public class ClienteManager {
             }
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error generando ID: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "❌ Error generando ID: " + e.getMessage());
         }
 
         return nuevoId;
     }
 
-    // Insertar cliente
+    // Insertar cliente en la base de datos
     public boolean insertarCliente(Cliente cliente) {
-        String sql = "INSERT INTO Cliente (idcliente, nombre, tienda, distrito, direccion, celular, fecharegistro) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Cliente (idcliente, nombre, tienda, distrito, direccion, celular, fecharegistro) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = conexionBD.conectar();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -57,12 +53,12 @@ public class ClienteManager {
             return true;
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error insertando cliente: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "❌ Error insertando cliente: " + e.getMessage());
+            return false;
         }
-
-        return false;
     }
 
+    // Obtener todos los IDs de cliente (para comboBox en PedidoForm)
     public List<String> obtenerIdsClientes() {
         List<String> ids = new ArrayList<>();
         String sql = "SELECT idcliente FROM Cliente";
@@ -76,12 +72,9 @@ public class ClienteManager {
             }
 
         } catch (SQLException e) {
-            System.out.println("❌ Error al obtener IDs de clientes: " + e.getMessage());
+            System.err.println("❌ Error al obtener IDs de clientes: " + e.getMessage());
         }
 
         return ids;
     }
-
-
-
 }

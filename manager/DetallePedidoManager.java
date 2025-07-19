@@ -21,7 +21,7 @@ public class DetallePedidoManager {
              ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 String ultimoId = rs.getString("iddetalle");
-                int numero = Integer.parseInt(ultimoId.substring(2)) + 1;
+                int numero = Integer.parseInt(ultimoId.substring(2)) + 1; // CORREGIDO
                 nuevoId = String.format("DP%03d", numero);
             }
         } catch (Exception e) {
@@ -88,24 +88,5 @@ public class DetallePedidoManager {
         }
 
         return ids;
-    }
-
-    // ✅ ESTE MÉTODO DEBE IR DENTRO DE LA CLASE
-    public String obtenerIdClientePorPedido(String idpedido) {
-        String idcliente = null;
-        try (Connection conn = conexionBD.conectar()) {
-            String sql = "SELECT idcliente FROM Pedido WHERE idpedido = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, idpedido);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                idcliente = rs.getString("idcliente");
-            }
-            rs.close();
-            ps.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return idcliente;
     }
 }
