@@ -10,20 +10,38 @@ import java.time.LocalDate;
 public class ClienteForm extends JFrame {
 
     private final JTextField txtId, txtNombre, txtDireccion, txtCelular, txtFecha;
-    private final JComboBox<String> comboTienda, comboDistrito;
+    private final JComboBox<String> comboTienda;
+    private final JComboBox<DistritoItem> comboDistrito;
     private final JButton btnRegistrar, btnLimpiar, btnCerrar;
 
-    // Tiendas y distritos predefinidos
     private final String[] tiendas = {
             "AMATE", "ATLANTIS", "BEAUTY", "FITBELLA", "HND", "LIBERTY", "MEN LAD", "RIVAS", "THIFAS",
             "TUMI SOF", "WONDER", "FLOWER", "MARABELL", "VITELA", "ZASSY", "2BLEA", "TAWAQUI", "QUEEN",
             "CIOSNI", "TIMUY"
     };
 
-    private final String[] distritos = {
-            "AGUSTINO", "ATE", "BREÑA", "CALLAO", "CARABAYLLO", "CHORRILLOS", "COMAS", "INDEPENDENCIA",
-            "JESUS MARIA", "LIMA", "MAGDALENA", "MANCHAY", "MIRAFLORES", "RIMAC", "SAN ISIDRO", "SAN MIGUEL",
-            "SJL REGULAR", "LA MOLINA", "SURCO", "SURQUILLO", "VENTANILLA"
+    private final DistritoItem[] distritos = {
+            new DistritoItem("AGUSTINO", 8),
+            new DistritoItem("ATE", 8),
+            new DistritoItem("BREÑA", 8),
+            new DistritoItem("CALLAO", 8),
+            new DistritoItem("CARABAYLLO", 12),
+            new DistritoItem("CHORRILLOS", 8),
+            new DistritoItem("COMAS", 8),
+            new DistritoItem("INDEPENDENCIA", 8),
+            new DistritoItem("JESUS MARIA", 8),
+            new DistritoItem("LIMA", 8),
+            new DistritoItem("MAGDALENA", 8),
+            new DistritoItem("MANCHAY", 18),
+            new DistritoItem("MIRAFLORES", 8),
+            new DistritoItem("RIMAC", 8),
+            new DistritoItem("SAN ISIDRO", 8),
+            new DistritoItem("SAN MIGUEL", 8),
+            new DistritoItem("SJL REGULAR", 8),
+            new DistritoItem("LA MOLINA", 8),
+            new DistritoItem("SURCO", 8),
+            new DistritoItem("SURQUILLO", 8),
+            new DistritoItem("VENTANILLA", 15)
     };
 
     public ClienteForm() {
@@ -39,7 +57,6 @@ public class ClienteForm extends JFrame {
         gbc.insets = new Insets(5, 10, 5, 10);
         gbc.anchor = GridBagConstraints.WEST;
 
-        // Campos
         txtId = new JTextField(15); txtId.setEditable(false);
         txtNombre = new JTextField(15);
         txtDireccion = new JTextField(15);
@@ -49,14 +66,11 @@ public class ClienteForm extends JFrame {
         comboTienda = new JComboBox<>(tiendas);
         comboDistrito = new JComboBox<>(distritos);
 
-        // Botones
         btnRegistrar = new JButton("Registrar");
         btnLimpiar = new JButton("Limpiar");
         btnCerrar = new JButton("Cerrar");
 
         int y = 0;
-
-        // Fila 1 - ID y Nombre
         gbc.gridx = 0; gbc.gridy = y;
         panel.add(new JLabel("ID Cliente:"), gbc);
         gbc.gridx = 1;
@@ -67,7 +81,6 @@ public class ClienteForm extends JFrame {
         panel.add(txtNombre, gbc);
         y++;
 
-        // Fila 2 - Tienda y Distrito
         gbc.gridx = 0; gbc.gridy = y;
         panel.add(new JLabel("Tienda:"), gbc);
         gbc.gridx = 1;
@@ -78,7 +91,6 @@ public class ClienteForm extends JFrame {
         panel.add(comboDistrito, gbc);
         y++;
 
-        // Fila 3 - Dirección y Celular
         gbc.gridx = 0; gbc.gridy = y;
         panel.add(new JLabel("Dirección:"), gbc);
         gbc.gridx = 1;
@@ -89,14 +101,12 @@ public class ClienteForm extends JFrame {
         panel.add(txtCelular, gbc);
         y++;
 
-        // Fila 4 - Fecha
         gbc.gridx = 0; gbc.gridy = y;
         panel.add(new JLabel("Fecha de Registro:"), gbc);
         gbc.gridx = 1;
         panel.add(txtFecha, gbc);
         y++;
 
-        // Fila 5 - Botones
         gbc.gridx = 0; gbc.gridy = y;
         panel.add(btnRegistrar, gbc);
         gbc.gridx = 1;
@@ -110,7 +120,6 @@ public class ClienteForm extends JFrame {
         generarNuevoId();
         cargarFechaActual();
 
-        // Acciones
         btnRegistrar.addActionListener(e -> registrarCliente());
         btnLimpiar.addActionListener(e -> {
             limpiarCampos();
@@ -135,7 +144,10 @@ public class ClienteForm extends JFrame {
         cliente.setIdcliente(txtId.getText());
         cliente.setNombre(txtNombre.getText());
         cliente.setTienda((String) comboTienda.getSelectedItem());
-        cliente.setDistrito((String) comboDistrito.getSelectedItem());
+
+        DistritoItem distritoSeleccionado = (DistritoItem) comboDistrito.getSelectedItem();
+        cliente.setDistrito(distritoSeleccionado.getNombre());
+
         cliente.setDireccion(txtDireccion.getText());
         cliente.setCelular(txtCelular.getText());
         cliente.setFecharegistro(txtFecha.getText());
@@ -159,5 +171,29 @@ public class ClienteForm extends JFrame {
         comboDistrito.setSelectedIndex(0);
         txtDireccion.setText("");
         txtCelular.setText("");
+    }
+
+    // Clase interna para representar distritos con valor oculto
+    private static class DistritoItem {
+        private final String nombre;
+        private final int costoEnvio;
+
+        public DistritoItem(String nombre, int costoEnvio) {
+            this.nombre = nombre;
+            this.costoEnvio = costoEnvio;
+        }
+
+        public String getNombre() {
+            return nombre;
+        }
+
+        public int getCostoEnvio() {
+            return costoEnvio;
+        }
+
+        @Override
+        public String toString() {
+            return nombre;
+        }
     }
 }
