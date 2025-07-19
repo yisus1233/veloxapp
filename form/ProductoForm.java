@@ -1,124 +1,131 @@
 package veloxapp.form;
 
-import veloxapp.modelo.Producto;
-import veloxapp.manager.ProductoManager;
+import veloxapp.conexion.conexionBD;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.*;
 
 public class ProductoForm extends JFrame {
-
-    private final JTextField txtId, txtNombre, txtPrecio;
-    private final JComboBox<TamañoItem> comboTamaño;
-    private final JButton btnRegistrar, btnLimpiar, btnCerrar;
+    private JTextField txtId, txtNombre, txtPrecio;
+    private JComboBox<String> comboTamaño;
+    private JButton btnRegistrar;
 
     public ProductoForm() {
         setTitle("Registro de Producto");
-        setSize(420, 300);
+        setSize(400, 300);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLayout(new GridLayout(5, 2, 10, 10));
 
-        JPanel panel = new JPanel(new GridLayout(6, 2, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-        // Campos
-        txtId = new JTextField(); txtId.setEditable(false);
+        txtId = new JTextField();
         txtNombre = new JTextField();
-        txtPrecio = new JTextField(); // editable, como tú indicas
+        txtPrecio = new JTextField();
+        txtPrecio.setEditable(false);
 
-        // ComboBox con valores internos ocultos
-        comboTamaño = new JComboBox<>(new TamañoItem[] {
-                new TamañoItem("Pequeño", 1.0),
-                new TamañoItem("Mediano", 1.2),
-                new TamañoItem("Grande", 1.5)
-        });
+        comboTamaño = new JComboBox<>(new String[]{"Pequeño", "Mediano", "Grande"});
+        comboTamaño.addActionListener(e -> calcularPrecioPorDistritoYTamaño());
 
-        // Botones
         btnRegistrar = new JButton("Registrar");
-        btnLimpiar = new JButton("Limpiar");
-        btnCerrar = new JButton("Cerrar");
+        btnRegistrar.addActionListener(e -> registrarProducto());
 
-        // Añadir componentes al panel
-        panel.add(new JLabel("ID Producto:")); panel.add(txtId);
-        panel.add(new JLabel("Nombre:")); panel.add(txtNombre);
-        panel.add(new JLabel("Precio:")); panel.add(txtPrecio);
-        panel.add(new JLabel("Tamaño:")); panel.add(comboTamaño);
-        panel.add(btnRegistrar); panel.add(btnLimpiar);
-        panel.add(new JLabel()); panel.add(btnCerrar);
-
-        add(panel);
+        add(new JLabel("ID Producto:"));
+        add(txtId);
+        add(new JLabel("Nombre:"));
+        add(txtNombre);
+        add(new JLabel("Tamaño:"));
+        add(comboTamaño);
+        add(new JLabel("Precio:"));
+        add(txtPrecio);
+        add(btnRegistrar);
 
         generarNuevoId();
-
-        // Acciones
-        btnRegistrar.addActionListener(e -> registrarProducto());
-        btnLimpiar.addActionListener(e -> {
-            limpiarCampos();
-            generarNuevoId();
-        });
-        btnCerrar.addActionListener(e -> dispose());
     }
 
     private void generarNuevoId() {
-        ProductoManager manager = new ProductoManager();
-        String nuevoId = manager.generarNuevoIdProducto();
-        txtId.setText(nuevoId);
+        try (Connection conn = conexionBD.conectar();
+             PreparedStatement ps = conn.prepareStatement("SELECT TOP 1 idproducto FROM Producto ORDER BY idproducto DESC");
+             ResultSet rs = ps.executeQuery()) {
+            String nuevoId = "P001";
+            if (rs.next()) {
+                String ultimoId = rs.getString("idproducto");
+                int numero = Integer.parseInt(ultimoId.substring(1)) + 1;
+                nuevoId = String.format("P%03d", numero);
+            }
+            txtId.setText(nuevoId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void calcularPrecioPorDistritoYTamaño() {
+        String tamaño = (String) comboTamaño.getSelectedItem();
+        String distrito = obtenerDistritoUltimoCliente();
+
+        if (tamaño == null || distrito == null || tamaño.isEmpty() || distrito.isEmpty()) {
+            txtPrecio.setText("");
+            return;
+        }
+
+        try {
+            double valorTamaño = obtenerValorPorTamaño(tamaño);
+            double valorDistrito = obtenerValorPorDistrito(distrito);
+            double precio = valorTamaño * valorDistrito;
+
+            txtPrecio.setText(String.format("%.2f", precio));
+        } catch (Exception e) {
+            txtPrecio.setText("0.00");
+        }
+    }
+
+    private String obtenerDistritoUltimoCliente() {
+        String distrito = "";
+        try (Connection conn = conexionBD.conectar()) {
+            String sql = "SELECT TOP 1 distrito FROM Cliente ORDER BY fecharegistro DESC";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                distrito = rs.getString("distrito");
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return distrito;
+    }
+
+    private double obtenerValorPorTamaño(String tamaño) {
+        switch (tamaño.toLowerCase()) {
+            case "pequeño": return 1.0;
+            case "mediano": return 1.5;
+            case "grande": return 2.0;
+            default: return 1.0;
+        }
+    }
+
+    private double obtenerValorPorDistrito(String distrito) {
+        switch (distrito.toLowerCase()) {
+            case "miraflores": return 5.0;
+            case "san isidro": return 6.0;
+            case "villa el salvador": return 3.0;
+            default: return 4.0;
+        }
     }
 
     private void registrarProducto() {
-        try {
-            Producto producto = new Producto();
-            producto.setIdproducto(txtId.getText());
-            producto.setNombre(txtNombre.getText());
-            producto.setPrecio(Double.parseDouble(txtPrecio.getText()));
-
-            TamañoItem tamañoSeleccionado = (TamañoItem) comboTamaño.getSelectedItem();
-            if (tamañoSeleccionado != null) {
-                producto.setTamaño(tamañoSeleccionado.getNombre()); // Se guarda como "Pequeño", "Mediano", etc.
-            }
-
-            ProductoManager manager = new ProductoManager();
-            boolean exito = manager.registrarProducto(producto);
-
-            if (exito) {
-                JOptionPane.showMessageDialog(this, "✅ Producto registrado con éxito.");
-                limpiarCampos();
-                generarNuevoId();
-            }
-
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "⚠️ Ingrese un precio válido.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void limpiarCampos() {
-        txtNombre.setText("");
-        txtPrecio.setText("");
-        comboTamaño.setSelectedIndex(0);
-    }
-
-    // Clase interna para representar Tamaño con valor oculto
-    private static class TamañoItem {
-        private final String nombre;
-        private final double multiplicador;
-
-        public TamañoItem(String nombre, double multiplicador) {
-            this.nombre = nombre;
-            this.multiplicador = multiplicador;
-        }
-
-        public String getNombre() {
-            return nombre;
-        }
-
-        public double getMultiplicador() {
-            return multiplicador;
-        }
-
-        @Override
-        public String toString() {
-            return nombre;
+        try (Connection conn = conexionBD.conectar()) {
+            String sql = "INSERT INTO Producto (idproducto, nombre, tamaño, precio) VALUES (?, ?, ?, ?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, txtId.getText());
+            ps.setString(2, txtNombre.getText());
+            ps.setString(3, (String) comboTamaño.getSelectedItem());
+            ps.setDouble(4, Double.parseDouble(txtPrecio.getText()));
+            ps.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Producto registrado exitosamente.");
+            dispose();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al registrar producto: " + e.getMessage());
         }
     }
 }

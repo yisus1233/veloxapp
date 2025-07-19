@@ -15,6 +15,9 @@ public class PedidoForm extends JFrame {
     private final JComboBox<String> comboClientes;
     private final JComboBox<String> comboEstado;
     private final JButton btnRegistrar, btnLimpiar, btnCerrar;
+    private final JButton btnSiguiente;
+
+    private boolean pedidoRegistrado = false;
 
     public PedidoForm() {
         setTitle("Registro de Pedido");
@@ -42,8 +45,9 @@ public class PedidoForm extends JFrame {
         btnRegistrar = new JButton("Registrar");
         btnLimpiar = new JButton("Limpiar");
         btnCerrar = new JButton("Cerrar");
+        btnSiguiente = new JButton("Siguiente");
 
-        // Agregar al panel
+        // Agregar componentes al panel principal
         panel.add(new JLabel("ID Pedido:"));
         panel.add(txtId);
         panel.add(new JLabel("Cliente:"));
@@ -58,7 +62,12 @@ public class PedidoForm extends JFrame {
         panel.add(btnLimpiar);
 
         add(panel, BorderLayout.CENTER);
-        add(btnCerrar, BorderLayout.SOUTH);
+
+        // Panel inferior con botón siguiente y cerrar
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        bottomPanel.add(btnSiguiente);
+        bottomPanel.add(btnCerrar);
+        add(bottomPanel, BorderLayout.SOUTH);
 
         generarNuevoId();
         cargarClientes();
@@ -68,6 +77,16 @@ public class PedidoForm extends JFrame {
         btnRegistrar.addActionListener(e -> registrarPedido());
         btnLimpiar.addActionListener(e -> limpiarCampos());
         btnCerrar.addActionListener(e -> dispose());
+
+        btnSiguiente.addActionListener(e -> {
+            if (pedidoRegistrado) {
+                veloxapp.form.DetallePedidoForm detalleForm = new veloxapp.form.DetallePedidoForm();
+                detalleForm.setVisible(true);
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "⚠️ Primero registre el pedido antes de continuar.");
+            }
+        });
     }
 
     private void generarNuevoId() {
@@ -102,9 +121,7 @@ public class PedidoForm extends JFrame {
 
             if (exito) {
                 JOptionPane.showMessageDialog(this, "✅ Pedido registrado con éxito.");
-                limpiarCampos();
-                generarNuevoId();
-                cargarFechaActual();
+                pedidoRegistrado = true; // Permitir avanzar
             }
 
         } catch (NumberFormatException ex) {
