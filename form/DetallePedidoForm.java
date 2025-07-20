@@ -10,7 +10,8 @@ import java.awt.*;
 public class DetallePedidoForm extends JFrame {
 
     private final JTextField txtId, txtCantidad, txtSubtotal;
-    private final JComboBox<String> comboPedido, comboProducto;
+    private final JComboBox<String> comboPedido;
+    private final JComboBox<ProductoItem> comboProducto;
     private final JButton btnRegistrar, btnLimpiar, btnCerrar, btnSiguiente;
 
     public DetallePedidoForm() {
@@ -49,7 +50,7 @@ public class DetallePedidoForm extends JFrame {
 
         // Fila 2
         gbc.gridx = 0; gbc.gridy = 1;
-        panel.add(new JLabel("ID Producto:"), gbc);
+        panel.add(new JLabel("Producto:"), gbc);
         gbc.gridx = 1;
         panel.add(comboProducto, gbc);
 
@@ -101,8 +102,16 @@ public class DetallePedidoForm extends JFrame {
 
     private void cargarDatos() {
         DetallePedidoManager manager = new DetallePedidoManager();
+
+        // Llena el combo de pedidos (por ID, como antes)
+        comboPedido.removeAllItems();
         for (String p : manager.obtenerIdsPedidos()) comboPedido.addItem(p);
-        for (String pr : manager.obtenerIdsProductos()) comboProducto.addItem(pr);
+
+        // Llena el combo de productos con objetos ProductoItem (nombre y precio)
+        comboProducto.removeAllItems();
+        for (ProductoInfo pr : manager.obtenerProductosInfo()) {
+            comboProducto.addItem(new ProductoItem(pr.id, pr.nombre));
+        }
     }
 
     private void generarNuevoId() {
@@ -120,15 +129,16 @@ public class DetallePedidoForm extends JFrame {
             DetallePedido detalle = new DetallePedido();
             detalle.setIddetalle(txtId.getText());
             detalle.setIdpedido((String) comboPedido.getSelectedItem());
-            detalle.setIdproducto((String) comboProducto.getSelectedItem());
+
+            ProductoItem productoSel = (ProductoItem) comboProducto.getSelectedItem();
+            detalle.setIdproducto(productoSel != null ? productoSel.getId() : null);
+
             detalle.setCantidad(Integer.parseInt(txtCantidad.getText()));
             detalle.setSubtotal(Double.parseDouble(txtSubtotal.getText()));
 
             DetallePedidoManager manager = new DetallePedidoManager();
             if (manager.insertarDetalle(detalle)) {
                 JOptionPane.showMessageDialog(this, "✅ Detalle registrado con éxito.");
-
-                // Abrir Entrega automáticamente
                 new EntregaForm().setVisible(true);
                 dispose();
             } else {
@@ -142,9 +152,9 @@ public class DetallePedidoForm extends JFrame {
     private void calcularPrecio() {
         try {
             String idpedido = (String) comboPedido.getSelectedItem();
-            String idproducto = (String) comboProducto.getSelectedItem();
+            ProductoItem productoSel = (ProductoItem) comboProducto.getSelectedItem();
 
-            if (idpedido == null || idproducto == null || txtCantidad.getText().isEmpty()) {
+            if (idpedido == null || productoSel == null || txtCantidad.getText().isEmpty()) {
                 txtSubtotal.setText("");
                 return;
             }
@@ -152,7 +162,7 @@ public class DetallePedidoForm extends JFrame {
             DetallePedidoManager manager = new DetallePedidoManager();
             String idcliente = manager.obtenerIdClientePorPedido(idpedido);
 
-            double precioUnitario = CalculadoraPrecio.obtenerPrecio(idcliente, idproducto);
+            double precioUnitario = CalculadoraPrecio.obtenerPrecio(idcliente, productoSel.getId());
             int cantidad = Integer.parseInt(txtCantidad.getText());
             double subtotal = precioUnitario * cantidad;
 
@@ -165,5 +175,29 @@ public class DetallePedidoForm extends JFrame {
     private void limpiarCampos() {
         txtCantidad.setText("");
         txtSubtotal.setText("");
+    }
+
+    // Clase interna para el combo de productos: muestra el nombre, guarda el ID
+    public static class ProductoItem {
+        private final String id;
+        private final String nombre;
+
+        public ProductoItem(String id, String nombre) {
+            this.id = id;
+            this.nombre = nombre;
+        }
+
+        public String getId() { return id; }
+        public String toString() { return nombre; }
+    }
+
+    // Clase para traer info de productos (id, nombre)
+    public static class ProductoInfo {
+        public final String id;
+        public final String nombre;
+        public ProductoInfo(String id, String nombre) {
+            this.id = id;
+            this.nombre = nombre;
+        }
     }
 }
