@@ -47,7 +47,7 @@ public class ProductoForm extends JFrame {
 
         // Fila 2 - Nombre
         gbc.gridx = 0; gbc.gridy = 1;
-        panel.add(new JLabel("Nombre:"), gbc);
+        panel.add(new JLabel("Detalle Producto:"), gbc);
         gbc.gridx = 1;
         panel.add(txtNombre, gbc);
 
