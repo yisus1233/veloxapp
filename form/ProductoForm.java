@@ -85,7 +85,7 @@ public class ProductoForm extends JFrame {
                 new veloxapp.form.PedidoForm().setVisible(true);
                 dispose();
             } else {
-                JOptionPane.showMessageDialog(this, "⚠️ Primero registre el producto antes de continuar.");
+                JOptionPane.showMessageDialog(this, "\u26a0\ufe0f Primero registre el producto antes de continuar.");
             }
         });
         btnCerrar.addActionListener(e -> dispose());
@@ -95,15 +95,21 @@ public class ProductoForm extends JFrame {
         try (Connection conn = conexionBD.conectar();
              PreparedStatement ps = conn.prepareStatement("SELECT TOP 1 idproducto FROM Producto ORDER BY idproducto DESC");
              ResultSet rs = ps.executeQuery()) {
-            String nuevoId = "P001";
+
+            String nuevoId;
             if (rs.next()) {
-                String ultimoId = rs.getString("idproducto");
-                int numero = Integer.parseInt(ultimoId.substring(1)) + 1;
-                nuevoId = String.format("P%03d", numero);
+                String ultimoId = rs.getString("idproducto"); // Por ejemplo "Po007"
+                int numero = Integer.parseInt(ultimoId.replaceAll("\\D", "")) + 1; // Extrae solo números
+                nuevoId = String.format("Po%03d", numero);
+            } else {
+                nuevoId = "Po001";
             }
+
             txtId.setText(nuevoId);
+
         } catch (Exception e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "⚠️ Error al generar ID del producto.");
         }
     }
 
@@ -147,18 +153,41 @@ public class ProductoForm extends JFrame {
     private double obtenerValorPorTamaño(String tamaño) {
         switch (tamaño.toLowerCase()) {
             case "pequeño": return 1.0;
-            case "mediano": return 1.5;
-            case "grande": return 2.0;
+            case "mediano": return 1.2;
+            case "grande": return 1.5;
             default: return 1.0;
         }
     }
 
     private double obtenerValorPorDistrito(String distrito) {
         switch (distrito.toLowerCase()) {
-            case "miraflores": return 5.0;
-            case "san isidro": return 6.0;
-            case "villa el salvador": return 3.0;
-            default: return 4.0;
+            case "agustino":
+            case "ate":
+            case "breña":
+            case "callao":
+            case "chorrillos":
+            case "comas":
+            case "independencia":
+            case "jesus maria":
+            case "lima":
+            case "magdalena":
+            case "miraflores":
+            case "rimac":
+            case "san isidro":
+            case "san miguel":
+            case "sjl regular":
+            case "la molina":
+            case "surco":
+            case "surquillo":
+                return 8.0;
+            case "carabayllo":
+                return 12.0;
+            case "ventanilla":
+                return 15.0;
+            case "manchay":
+                return 18.0;
+            default:
+                return 8.0;
         }
     }
 
@@ -171,10 +200,10 @@ public class ProductoForm extends JFrame {
             ps.setString(3, (String) comboTamaño.getSelectedItem());
             ps.setDouble(4, Double.parseDouble(txtPrecio.getText()));
             ps.executeUpdate();
-            JOptionPane.showMessageDialog(this, "✅ Producto registrado exitosamente.");
+            JOptionPane.showMessageDialog(this, "\u2705 Producto registrado exitosamente.");
             productoRegistrado = true;
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "❌ Error al registrar producto: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "\u274c Error al registrar producto: " + e.getMessage());
         }
     }
 }
