@@ -2,10 +2,14 @@ package veloxapp.form;
 
 import veloxapp.manager.DetallePedidoManager;
 import veloxapp.modelo.DetallePedido;
-import veloxapp.formulas.CalculadoraPrecio;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import veloxapp.conexion.conexionBD;
 
 public class DetallePedidoForm extends JFrame {
 
@@ -64,7 +68,7 @@ public class DetallePedidoForm extends JFrame {
         gbc.gridx = 3;
         panel.add(txtSubtotal, gbc);
 
-        // Fila 4 - Botones principales
+        // Fila 4
         gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 4;
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
         btnPanel.add(btnRegistrar);
@@ -72,7 +76,7 @@ public class DetallePedidoForm extends JFrame {
         btnPanel.add(btnCerrar);
         panel.add(btnPanel, gbc);
 
-        // Fila 5 - Botón siguiente
+        // Fila 5
         gbc.gridy = 4;
         JPanel siguientePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         siguientePanel.add(btnSiguiente);
@@ -83,7 +87,6 @@ public class DetallePedidoForm extends JFrame {
         cargarDatos();
         generarNuevoId();
 
-        // Eventos
         btnRegistrar.addActionListener(e -> registrarDetalle());
         btnLimpiar.addActionListener(e -> {
             limpiarCampos();
@@ -95,19 +98,16 @@ public class DetallePedidoForm extends JFrame {
             dispose();
         });
 
-        comboProducto.addActionListener(e -> calcularPrecio());
-        comboPedido.addActionListener(e -> calcularPrecio());
-        txtCantidad.addCaretListener(e -> calcularPrecio());
+        txtCantidad.addCaretListener(e -> calcularSubtotal());
+        comboPedido.addActionListener(e -> calcularSubtotal());
     }
 
     private void cargarDatos() {
         DetallePedidoManager manager = new DetallePedidoManager();
 
-        // Llena el combo de pedidos (por ID, como antes)
         comboPedido.removeAllItems();
         for (String p : manager.obtenerIdsPedidos()) comboPedido.addItem(p);
 
-        // Llena el combo de productos con objetos ProductoItem (nombre y precio)
         comboProducto.removeAllItems();
         for (ProductoInfo pr : manager.obtenerProductosInfo()) {
             comboProducto.addItem(new ProductoItem(pr.id, pr.nombre));
@@ -149,27 +149,37 @@ public class DetallePedidoForm extends JFrame {
         }
     }
 
-    private void calcularPrecio() {
+    private void calcularSubtotal() {
         try {
             String idpedido = (String) comboPedido.getSelectedItem();
-            ProductoItem productoSel = (ProductoItem) comboProducto.getSelectedItem();
+            int cantidad = Integer.parseInt(txtCantidad.getText());
 
-            if (idpedido == null || productoSel == null || txtCantidad.getText().isEmpty()) {
+            if (idpedido == null || cantidad <= 0) {
                 txtSubtotal.setText("");
                 return;
             }
 
-            DetallePedidoManager manager = new DetallePedidoManager();
-            String idcliente = manager.obtenerIdClientePorPedido(idpedido);
-
-            double precioUnitario = CalculadoraPrecio.obtenerPrecio(idcliente, productoSel.getId());
-            int cantidad = Integer.parseInt(txtCantidad.getText());
-            double subtotal = precioUnitario * cantidad;
-
+            double totalPedido = obtenerTotalPedido(idpedido);
+            double subtotal = cantidad * totalPedido;
             txtSubtotal.setText(String.format("%.2f", subtotal));
-        } catch (Exception ex) {
+
+        } catch (Exception e) {
             txtSubtotal.setText("0.00");
         }
+    }
+
+    private double obtenerTotalPedido(String idPedido) {
+        try (Connection conn = conexionBD.conectar();
+             PreparedStatement ps = conn.prepareStatement("SELECT total FROM Pedido WHERE idpedido = ?")) {
+            ps.setString(1, idPedido);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble("total");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0.00;
     }
 
     private void limpiarCampos() {
@@ -177,7 +187,6 @@ public class DetallePedidoForm extends JFrame {
         txtSubtotal.setText("");
     }
 
-    // Clase interna para el combo de productos: muestra el nombre, guarda el ID
     public static class ProductoItem {
         private final String id;
         private final String nombre;
@@ -191,10 +200,10 @@ public class DetallePedidoForm extends JFrame {
         public String toString() { return nombre; }
     }
 
-    // Clase para traer info de productos (id, nombre)
     public static class ProductoInfo {
         public final String id;
         public final String nombre;
+
         public ProductoInfo(String id, String nombre) {
             this.id = id;
             this.nombre = nombre;

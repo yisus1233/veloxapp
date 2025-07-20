@@ -2,7 +2,6 @@ package veloxapp.form;
 
 import veloxapp.modelo.Pedido;
 import veloxapp.manager.PedidoManager;
-import veloxapp.manager.ClienteManager;
 import veloxapp.conexion.conexionBD;
 
 import javax.swing.*;
@@ -33,15 +32,16 @@ public class PedidoForm extends JFrame {
         txtId.setEditable(false);
 
         comboClientes = new JComboBox<>();
-        cargarClientes(); // Llenar combo con nombres
+        cargarClientes();
 
-        comboEstado = new JComboBox<>(new String[]{"Pendiente", "Procesado", "Entregado"});
+        comboEstado = new JComboBox<>(new String[]{"Recepcionado", "En ruta"});
+        comboEstado.addActionListener(e -> calcularTotalPorEstado());
 
         txtFecha = new JTextField();
         txtFecha.setEditable(false);
 
         txtTotal = new JTextField();
-        txtTotal.setEditable(false); // El total es automático
+        txtTotal.setEditable(false);
 
         btnRegistrar = new JButton("Registrar");
         btnLimpiar = new JButton("Limpiar");
@@ -71,7 +71,7 @@ public class PedidoForm extends JFrame {
 
         generarNuevoId();
         cargarFechaActual();
-        calcularTotalPedido(); // Llama aquí o después de añadir detalles
+        calcularTotalPorEstado(); // Calcular al cargar el formulario
 
         btnRegistrar.addActionListener(e -> registrarPedido());
         btnLimpiar.addActionListener(e -> limpiarCampos());
@@ -92,7 +92,6 @@ public class PedidoForm extends JFrame {
         txtId.setText(manager.generarNuevoIdPedido());
     }
 
-    // Llena el combo con objetos ClienteItem (nombre visible, id oculto)
     private void cargarClientes() {
         comboClientes.removeAllItems();
         try (Connection conn = conexionBD.conectar();
@@ -110,23 +109,28 @@ public class PedidoForm extends JFrame {
         txtFecha.setText(LocalDate.now().toString());
     }
 
-    // Calcula el total sumando los subtotales de los detalles de pedido asociados al id de pedido generado
-    private void calcularTotalPedido() {
-        String idPedido = txtId.getText();
+    // Este método calcula el total según el estado seleccionado
+    private void calcularTotalPorEstado() {
+        String estado = (String) comboEstado.getSelectedItem();
+        if ("Recepcionado".equalsIgnoreCase(estado)) {
+            txtTotal.setText("0.00");
+        } else if ("En ruta".equalsIgnoreCase(estado)) {
+            double precioUltimoProducto = obtenerPrecioUltimoProducto();
+            txtTotal.setText(String.format("%.2f", precioUltimoProducto));
+        }
+    }
+
+    private double obtenerPrecioUltimoProducto() {
         try (Connection conn = conexionBD.conectar();
-             PreparedStatement ps = conn.prepareStatement(
-                     "SELECT SUM(subtotal) as total FROM Detalle_Pedido WHERE idpedido = ?")) {
-            ps.setString(1, idPedido);
-            ResultSet rs = ps.executeQuery();
+             PreparedStatement ps = conn.prepareStatement("SELECT TOP 1 precio FROM Producto ORDER BY idproducto DESC");
+             ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
-                double total = rs.getDouble("total");
-                txtTotal.setText(String.format("%.2f", total));
-            } else {
-                txtTotal.setText("0.00");
+                return rs.getDouble("precio");
             }
         } catch (Exception e) {
-            txtTotal.setText("0.00");
+            e.printStackTrace();
         }
+        return 0.00;
     }
 
     private void registrarPedido() {
@@ -140,7 +144,6 @@ public class PedidoForm extends JFrame {
             pedido.setEstado((String) comboEstado.getSelectedItem());
             pedido.setFechapedido(txtFecha.getText());
 
-            // El total se calcula automáticamente
             double total = Double.parseDouble(txtTotal.getText().isEmpty() ? "0" : txtTotal.getText());
             pedido.setTotal(total);
 
@@ -151,23 +154,21 @@ public class PedidoForm extends JFrame {
                 JOptionPane.showMessageDialog(this, "✅ Pedido registrado con éxito.");
                 pedidoRegistrado = true;
 
-                // Abrir DetallePedidoForm automáticamente
                 new veloxapp.form.DetallePedidoForm().setVisible(true);
                 dispose();
             }
 
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "⚠ Ocurrió un error al calcular el total.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "⚠ Error al calcular el total.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void limpiarCampos() {
         comboClientes.setSelectedIndex(0);
         comboEstado.setSelectedIndex(0);
-        txtTotal.setText("");
+        calcularTotalPorEstado();
     }
 
-    // Clase interna para mostrar el nombre pero guardar el ID
     public static class ClienteItem {
         private final String id;
         private final String nombre;

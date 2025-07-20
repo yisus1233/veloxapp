@@ -162,22 +162,39 @@ public class ProductoForm extends JFrame {
     private double obtenerValorPorDistrito(String distrito) {
         switch (distrito.toLowerCase()) {
             case "agustino":
+                return 8.0;
             case "ate":
+                return 8.0;
             case "breña":
+                return 8.0;
             case "callao":
+                return 8.0;
             case "chorrillos":
+                return 8.0;
             case "comas":
+                return 8.0;
             case "independencia":
+                return 8.0;
             case "jesus maria":
+                return 8.0;
             case "lima":
+                return 8.0;
             case "magdalena":
+                return 8.0;
             case "miraflores":
+                return 8.0;
             case "rimac":
+                return 8.0;
             case "san isidro":
+                return 8.0;
             case "san miguel":
+                return 8.0;
             case "sjl regular":
+                return 8.0;
             case "la molina":
+                return 8.0;
             case "surco":
+                return 8.0;
             case "surquillo":
                 return 8.0;
             case "carabayllo":
