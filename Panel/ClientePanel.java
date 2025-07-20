@@ -1,4 +1,4 @@
-package veloxapp.form;
+package Panel;
 
 import veloxapp.modelo.Cliente;
 import veloxapp.manager.ClienteManager;
@@ -7,12 +7,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDate;
 
-public class ClienteForm extends JFrame {
+public class ClientePanel extends JPanel {
 
     private final JTextField txtId, txtNombre, txtDireccion, txtCelular, txtFecha;
     private final JComboBox<String> comboTienda;
     private final JComboBox<DistritoItem> comboDistrito;
-    private final JButton btnRegistrar, btnLimpiar, btnCerrar, btnSiguiente;
+    private final JButton btnRegistrar, btnLimpiar;
 
     private boolean clienteRegistrado = false;
 
@@ -23,104 +23,100 @@ public class ClienteForm extends JFrame {
     };
 
     private final DistritoItem[] distritos = {
-            new DistritoItem("AGUSTINO", 8),
-            new DistritoItem("ATE", 8),
-            new DistritoItem("BREÑA", 8),
-            new DistritoItem("CALLAO", 8),
-            new DistritoItem("CARABAYLLO", 12),
-            new DistritoItem("CHORRILLOS", 8),
-            new DistritoItem("COMAS", 8),
-            new DistritoItem("INDEPENDENCIA", 8),
-            new DistritoItem("JESUS MARIA", 8),
-            new DistritoItem("LIMA", 8),
-            new DistritoItem("MAGDALENA", 8),
-            new DistritoItem("MANCHAY", 18),
-            new DistritoItem("MIRAFLORES", 8),
-            new DistritoItem("RIMAC", 8),
-            new DistritoItem("SAN ISIDRO", 8),
-            new DistritoItem("SAN MIGUEL", 8),
-            new DistritoItem("SJL REGULAR", 8),
-            new DistritoItem("LA MOLINA", 8),
-            new DistritoItem("SURCO", 8),
-            new DistritoItem("SURQUILLO", 8),
+            new DistritoItem("AGUSTINO", 8), new DistritoItem("ATE", 8),
+            new DistritoItem("BREÑA", 8), new DistritoItem("CALLAO", 8),
+            new DistritoItem("CARABAYLLO", 12), new DistritoItem("CHORRILLOS", 8),
+            new DistritoItem("COMAS", 8), new DistritoItem("INDEPENDENCIA", 8),
+            new DistritoItem("JESUS MARIA", 8), new DistritoItem("LIMA", 8),
+            new DistritoItem("MAGDALENA", 8), new DistritoItem("MANCHAY", 18),
+            new DistritoItem("MIRAFLORES", 8), new DistritoItem("RIMAC", 8),
+            new DistritoItem("SAN ISIDRO", 8), new DistritoItem("SAN MIGUEL", 8),
+            new DistritoItem("SJL REGULAR", 8), new DistritoItem("LA MOLINA", 8),
+            new DistritoItem("SURCO", 8), new DistritoItem("SURQUILLO", 8),
             new DistritoItem("VENTANILLA", 15)
     };
 
-    public ClienteForm() {
-        setTitle("Registro de Cliente");
-        setSize(600, 400);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
+    public ClientePanel() {
+        // Estilo general
+        setBackground(new Color(245, 247, 255));
+        setLayout(new GridBagLayout());
 
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        // Panel central del formulario, con sombra
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(30, 60, 30, 60),
+                BorderFactory.createLineBorder(new Color(180, 200, 240), 1)
+        ));
+        formPanel.setBackground(Color.white);
+
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 10, 5, 10);
+        gbc.insets = new Insets(12, 18, 12, 18);
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        txtId = new JTextField(15); txtId.setEditable(false);
-        txtNombre = new JTextField(15);
-        txtDireccion = new JTextField(15);
-        txtCelular = new JTextField(15);
-        txtFecha = new JTextField(15); txtFecha.setEditable(false);
+        Font labelFont = new Font("Segoe UI", Font.BOLD, 15);
+        Font inputFont = new Font("Segoe UI", Font.PLAIN, 15);
 
-        comboTienda = new JComboBox<>(tiendas);
-        comboDistrito = new JComboBox<>(distritos);
+        txtId = new JTextField(15); txtId.setEditable(false); txtId.setFont(inputFont);
+        txtNombre = new JTextField(15); txtNombre.setFont(inputFont);
+        txtDireccion = new JTextField(15); txtDireccion.setFont(inputFont);
+        txtCelular = new JTextField(15); txtCelular.setFont(inputFont);
+        txtFecha = new JTextField(15); txtFecha.setEditable(false); txtFecha.setFont(inputFont);
 
-        btnRegistrar = new JButton("Registrar");
-        btnLimpiar = new JButton("Limpiar");
-        btnCerrar = new JButton("Cerrar");
-        btnSiguiente = new JButton("Siguiente");
+        comboTienda = new JComboBox<>(tiendas); comboTienda.setFont(inputFont);
+        comboDistrito = new JComboBox<>(distritos); comboDistrito.setFont(inputFont);
+
+        btnRegistrar = new JButton("Registrar"); btnRegistrar.setFont(inputFont);
+        btnLimpiar = new JButton("Limpiar"); btnLimpiar.setFont(inputFont);
 
         int y = 0;
         gbc.gridx = 0; gbc.gridy = y;
-        panel.add(new JLabel("ID Cliente:"), gbc);
+        formPanel.add(new JLabel("ID Cliente:") {{ setFont(labelFont); }}, gbc);
         gbc.gridx = 1;
-        panel.add(txtId, gbc);
+        formPanel.add(txtId, gbc);
         gbc.gridx = 2;
-        panel.add(new JLabel("Nombre:"), gbc);
+        formPanel.add(new JLabel("Nombre:") {{ setFont(labelFont); }}, gbc);
         gbc.gridx = 3;
-        panel.add(txtNombre, gbc);
+        formPanel.add(txtNombre, gbc);
         y++;
 
         gbc.gridx = 0; gbc.gridy = y;
-        panel.add(new JLabel("Tienda:"), gbc);
+        formPanel.add(new JLabel("Tienda:") {{ setFont(labelFont); }}, gbc);
         gbc.gridx = 1;
-        panel.add(comboTienda, gbc);
+        formPanel.add(comboTienda, gbc);
         gbc.gridx = 2;
-        panel.add(new JLabel("Distrito:"), gbc);
+        formPanel.add(new JLabel("Distrito:") {{ setFont(labelFont); }}, gbc);
         gbc.gridx = 3;
-        panel.add(comboDistrito, gbc);
+        formPanel.add(comboDistrito, gbc);
         y++;
 
         gbc.gridx = 0; gbc.gridy = y;
-        panel.add(new JLabel("Dirección:"), gbc);
+        formPanel.add(new JLabel("Dirección:") {{ setFont(labelFont); }}, gbc);
         gbc.gridx = 1;
-        panel.add(txtDireccion, gbc);
+        formPanel.add(txtDireccion, gbc);
         gbc.gridx = 2;
-        panel.add(new JLabel("Celular:"), gbc);
+        formPanel.add(new JLabel("Celular:") {{ setFont(labelFont); }}, gbc);
         gbc.gridx = 3;
-        panel.add(txtCelular, gbc);
+        formPanel.add(txtCelular, gbc);
         y++;
 
         gbc.gridx = 0; gbc.gridy = y;
-        panel.add(new JLabel("Fecha de Registro:"), gbc);
+        formPanel.add(new JLabel("Fecha de Registro:") {{ setFont(labelFont); }}, gbc);
         gbc.gridx = 1;
-        panel.add(txtFecha, gbc);
-        y++;
+        formPanel.add(txtFecha, gbc);
 
-        gbc.gridx = 0; gbc.gridy = y;
-        panel.add(btnRegistrar, gbc);
-        gbc.gridx = 1;
-        panel.add(btnLimpiar, gbc);
-        gbc.gridx = 2;
-        panel.add(btnCerrar, gbc);
-        gbc.gridx = 3;
-        panel.add(btnSiguiente, gbc);
+        // Botones centrados abajo
+        gbc.gridy = ++y;
+        gbc.gridx = 0;
+        gbc.gridwidth = 4;
+        gbc.anchor = GridBagConstraints.CENTER;
+        JPanel btns = new JPanel();
+        btns.setBackground(Color.white);
+        btns.add(btnRegistrar);
+        btns.add(btnLimpiar);
+        formPanel.add(btns, gbc);
 
-        add(panel);
+        add(formPanel, new GridBagConstraints()); // Panel centrado
 
         generarNuevoId();
         cargarFechaActual();
@@ -131,17 +127,6 @@ public class ClienteForm extends JFrame {
             generarNuevoId();
             cargarFechaActual();
             clienteRegistrado = false;
-        });
-        btnCerrar.addActionListener(e -> dispose());
-
-        // 🔁 ACTUALIZADO: secuencia al formulario MotorizadoForm
-        btnSiguiente.addActionListener(e -> {
-            if (!clienteRegistrado) {
-                JOptionPane.showMessageDialog(this, "⚠️ Primero debes registrar al cliente.");
-            } else {
-                new veloxapp.form.MotorizadoForm().setVisible(true);
-                dispose();
-            }
         });
     }
 

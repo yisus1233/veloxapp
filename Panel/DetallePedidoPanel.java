@@ -1,7 +1,8 @@
-package veloxapp.form;
+package Panel;
 
 import veloxapp.manager.DetallePedidoManager;
 import veloxapp.modelo.DetallePedido;
+
 import javax.swing.*;
 import java.awt.*;
 import java.sql.Connection;
@@ -11,22 +12,20 @@ import java.util.Collections;
 import java.util.List;
 import veloxapp.conexion.conexionBD;
 
-public class DetallePedidoForm extends JFrame {
+public class DetallePedidoPanel extends JPanel {
 
     private final JTextField txtId, txtCantidad, txtSubtotal;
     private final JComboBox<String> comboPedido;
-    private final JComboBox<DetallePedidoManager.ProductoInfo> comboProducto;
-    private final JButton btnRegistrar, btnLimpiar, btnCerrar, btnSiguiente;
+    private final JComboBox<DetallePedidoManager.ProductoInfo> comboProducto; // Usa el tipo del manager
+    private final JButton btnRegistrar, btnLimpiar, btnSiguiente;
 
-    public DetallePedidoForm() {
-        setTitle("Registro de Detalle de Pedido");
-        setSize(550, 360);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
+    public DetallePedidoPanel() {
+        setLayout(new GridBagLayout());
+        setBackground(new Color(247, 249, 255));
 
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20));
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(BorderFactory.createTitledBorder("Registro de Detalle de Pedido"));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -39,7 +38,6 @@ public class DetallePedidoForm extends JFrame {
 
         btnRegistrar = new JButton("Registrar");
         btnLimpiar = new JButton("Limpiar");
-        btnCerrar = new JButton("Cerrar");
         btnSiguiente = new JButton("Siguiente");
 
         // Fila 1
@@ -68,21 +66,15 @@ public class DetallePedidoForm extends JFrame {
         gbc.gridx = 3;
         panel.add(txtSubtotal, gbc);
 
-        // Fila 4
+        // Fila 4 (botones)
         gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 4;
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
         btnPanel.add(btnRegistrar);
         btnPanel.add(btnLimpiar);
-        btnPanel.add(btnCerrar);
+        btnPanel.add(btnSiguiente);
         panel.add(btnPanel, gbc);
 
-        // Fila 5
-        gbc.gridy = 4;
-        JPanel siguientePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        siguientePanel.add(btnSiguiente);
-        panel.add(siguientePanel, gbc);
-
-        add(panel);
+        add(panel, new GridBagConstraints());
 
         cargarDatos();
         generarNuevoId();
@@ -92,10 +84,8 @@ public class DetallePedidoForm extends JFrame {
             limpiarCampos();
             generarNuevoId();
         });
-        btnCerrar.addActionListener(e -> dispose());
         btnSiguiente.addActionListener(e -> {
-            new veloxapp.form.EntregaForm().setVisible(true);
-            dispose();
+            JOptionPane.showMessageDialog(this, "Siguiente panel aquí (puedes llamar a EntregaPanel si lo tienes)");
         });
 
         txtCantidad.addCaretListener(e -> calcularSubtotal());
@@ -105,18 +95,18 @@ public class DetallePedidoForm extends JFrame {
     private void cargarDatos() {
         DetallePedidoManager manager = new DetallePedidoManager();
 
-        // Cargar pedidos en orden inverso
+        // Pedidos en orden inverso
         comboPedido.removeAllItems();
         List<String> pedidos = manager.obtenerIdsPedidos();
         Collections.reverse(pedidos);
         for (String p : pedidos) comboPedido.addItem(p);
 
-        // Cargar productos en orden inverso
+        // Productos en orden inverso
         comboProducto.removeAllItems();
         List<DetallePedidoManager.ProductoInfo> productos = manager.obtenerProductosInfo();
         Collections.reverse(productos);
         for (DetallePedidoManager.ProductoInfo pr : productos) {
-            comboProducto.addItem(pr); // Usamos directamente ProductoInfo (con toString sobrescrito)
+            comboProducto.addItem(pr);
         }
     }
 
@@ -145,8 +135,8 @@ public class DetallePedidoForm extends JFrame {
             DetallePedidoManager manager = new DetallePedidoManager();
             if (manager.insertarDetalle(detalle)) {
                 JOptionPane.showMessageDialog(this, "✅ Detalle registrado con éxito.");
-                new veloxapp.form.EntregaForm().setVisible(true);
-                dispose();
+                limpiarCampos();
+                generarNuevoId();
             } else {
                 JOptionPane.showMessageDialog(this, "❌ Error al registrar.", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -190,5 +180,12 @@ public class DetallePedidoForm extends JFrame {
     private void limpiarCampos() {
         txtCantidad.setText("");
         txtSubtotal.setText("");
+    }
+
+    // NO NECESITAS clase ProductoInfo acá,
+    // usa la que ya está en DetallePedidoManager.
+    @Override
+    public String toString() {
+        return "DetallePedidoPanel";
     }
 }
