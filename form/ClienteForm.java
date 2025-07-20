@@ -134,15 +134,20 @@ public class ClienteForm extends JFrame {
         });
         btnCerrar.addActionListener(e -> dispose());
 
-        // 🔁 ACTUALIZADO: secuencia al formulario MotorizadoForm
         btnSiguiente.addActionListener(e -> {
             if (!clienteRegistrado) {
                 JOptionPane.showMessageDialog(this, "⚠️ Primero debes registrar al cliente.");
             } else {
-                new MotorizadoForm().setVisible(true);
+                String nombreCliente = txtNombre.getText();
+                DistritoItem distritoSeleccionado = (DistritoItem) comboDistrito.getSelectedItem();
+                String distritoCliente = distritoSeleccionado.getNombre();
+
+                // SOLO MotorizadoForm aquí
+                new veloxapp.form.MotorizadoForm(nombreCliente, distritoCliente).setVisible(true);
                 dispose();
             }
         });
+
     }
 
     private void generarNuevoId() {

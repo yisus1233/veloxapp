@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MotorizadoForm extends JFrame {
+    private String nombreCliente;
+    private String distritoCliente;
 
     private final JTextField txtId, txtCelular, txtPlaca;
     private final JComboBox<String> comboNombre;
@@ -19,7 +21,10 @@ public class MotorizadoForm extends JFrame {
             "HENRRY", "DIEGO", "AMIEL", "PABLO", "ALEXANDER", " "
     };
 
-    public MotorizadoForm() {
+    public MotorizadoForm(String nombreCliente, String distritoCliente) {
+        this.nombreCliente = nombreCliente;
+        this.distritoCliente = distritoCliente;
+
         setTitle("Registro de Motorizado");
         setSize(500, 300);
         setLocationRelativeTo(null);
@@ -102,7 +107,8 @@ public class MotorizadoForm extends JFrame {
 
         btnSiguiente.addActionListener(e -> {
             if (motorizadoRegistrado) {
-                new veloxapp.form.ProductoForm().setVisible(true);
+                // Pasa los datos de cliente a ProductoForm
+                new veloxapp.form.ProductoForm(nombreCliente, distritoCliente).setVisible(true);
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "⚠️ Primero registre el motorizado antes de continuar.");

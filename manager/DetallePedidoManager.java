@@ -2,6 +2,7 @@ package veloxapp.manager;
 
 import veloxapp.conexion.conexionBD;
 import veloxapp.modelo.DetallePedido;
+import veloxapp.form.DetallePedidoForm;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -71,6 +72,29 @@ public class DetallePedidoManager {
         return ids;
     }
 
+    // MÉTODO ACTUALIZADO: Devuelve productos con ID y NOMBRE para el combo
+    public List<DetallePedidoForm.ProductoInfo> obtenerProductosInfo() {
+        List<DetallePedidoForm.ProductoInfo> productos = new ArrayList<>();
+        String sql = "SELECT idproducto, nombre FROM Producto";
+
+        try (Connection conn = conexionBD.conectar();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                String id = rs.getString("idproducto");
+                String nombre = rs.getString("nombre");
+                productos.add(new DetallePedidoForm.ProductoInfo(id, nombre));
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error obteniendo productos: " + e.getMessage());
+        }
+
+        return productos;
+    }
+
+    // Si aún lo necesitas, puedes dejar el método viejo:
     public List<String> obtenerIdsProductos() {
         List<String> ids = new ArrayList<>();
         String sql = "SELECT idproducto FROM Producto";
