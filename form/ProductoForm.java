@@ -11,12 +11,19 @@ public class ProductoForm extends JFrame {
     private JTextField txtId, txtNombre, txtPrecio;
     private JComboBox<String> comboTamaño;
     private JButton btnRegistrar, btnSiguiente, btnCerrar;
+    private JLabel lblCliente;
 
     private boolean productoRegistrado = false;
+    private String nombreCliente;
+    private String distritoCliente;
 
-    public ProductoForm() {
+    // El único constructor permitido: SIEMPRE recibirás nombre y distrito
+    public ProductoForm(String nombreCliente, String distritoCliente) {
+        this.nombreCliente = nombreCliente;
+        this.distritoCliente = distritoCliente;
+
         setTitle("Registro de Producto");
-        setSize(500, 300);
+        setSize(500, 330);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
@@ -39,38 +46,44 @@ public class ProductoForm extends JFrame {
         btnSiguiente = new JButton("Siguiente");
         btnCerrar = new JButton("Cerrar");
 
-        // Fila 1 - ID
-        gbc.gridx = 0; gbc.gridy = 0;
+        // Fila 0 - Nombre del cliente (arriba de todo)
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+        lblCliente = new JLabel("Cliente: " + nombreCliente + " | Distrito: " + distritoCliente);
+        panel.add(lblCliente, gbc);
+        gbc.gridwidth = 1;
+
+        // Fila 1 - ID Producto
+        gbc.gridx = 0; gbc.gridy = 1;
         panel.add(new JLabel("ID Producto:"), gbc);
         gbc.gridx = 1;
         panel.add(txtId, gbc);
 
-        // Fila 2 - Nombre
-        gbc.gridx = 0; gbc.gridy = 1;
-        panel.add(new JLabel("Nombre:"), gbc);
+        // Fila 2 - Nombre Producto
+        gbc.gridx = 0; gbc.gridy = 2;
+        panel.add(new JLabel("Detalle Producto:"), gbc);
         gbc.gridx = 1;
         panel.add(txtNombre, gbc);
 
         // Fila 3 - Tamaño
-        gbc.gridx = 0; gbc.gridy = 2;
+        gbc.gridx = 0; gbc.gridy = 3;
         panel.add(new JLabel("Tamaño:"), gbc);
         gbc.gridx = 1;
         panel.add(comboTamaño, gbc);
 
         // Fila 4 - Precio
-        gbc.gridx = 0; gbc.gridy = 3;
+        gbc.gridx = 0; gbc.gridy = 4;
         panel.add(new JLabel("Precio:"), gbc);
         gbc.gridx = 1;
         panel.add(txtPrecio, gbc);
 
-        // Fila 5 - Botones Registrar y Siguiente
-        gbc.gridx = 0; gbc.gridy = 4;
+        // Fila 5 - Botones
+        gbc.gridx = 0; gbc.gridy = 5;
         panel.add(btnRegistrar, gbc);
         gbc.gridx = 1;
         panel.add(btnSiguiente, gbc);
 
         // Fila 6 - Cerrar
-        gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2;
+        gbc.gridx = 0; gbc.gridy = 6; gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         panel.add(btnCerrar, gbc);
 
@@ -89,6 +102,9 @@ public class ProductoForm extends JFrame {
             }
         });
         btnCerrar.addActionListener(e -> dispose());
+
+        // Calcula precio automático al abrir el form
+        calcularPrecioPorDistritoYTamaño();
     }
 
     private void generarNuevoId() {
@@ -98,7 +114,7 @@ public class ProductoForm extends JFrame {
             String nuevoId = "P001";
             if (rs.next()) {
                 String ultimoId = rs.getString("idproducto");
-                int numero = Integer.parseInt(ultimoId.substring(1)) + 1;
+                int numero = Integer.parseInt(ultimoId.substring(1).trim()) + 1;
                 nuevoId = String.format("P%03d", numero);
             }
             txtId.setText(nuevoId);
@@ -109,39 +125,21 @@ public class ProductoForm extends JFrame {
 
     private void calcularPrecioPorDistritoYTamaño() {
         String tamaño = (String) comboTamaño.getSelectedItem();
-        String distrito = obtenerDistritoUltimoCliente();
 
-        if (tamaño == null || distrito == null || tamaño.isEmpty() || distrito.isEmpty()) {
+        if (tamaño == null || distritoCliente == null || tamaño.isEmpty() || distritoCliente.isEmpty()) {
             txtPrecio.setText("");
             return;
         }
 
         try {
             double valorTamaño = obtenerValorPorTamaño(tamaño);
-            double valorDistrito = obtenerValorPorDistrito(distrito);
+            double valorDistrito = obtenerValorPorDistrito(distritoCliente);
             double precio = valorTamaño * valorDistrito;
 
             txtPrecio.setText(String.format("%.2f", precio));
         } catch (Exception e) {
             txtPrecio.setText("0.00");
         }
-    }
-
-    private String obtenerDistritoUltimoCliente() {
-        String distrito = "";
-        try (Connection conn = conexionBD.conectar()) {
-            String sql = "SELECT TOP 1 distrito FROM Cliente ORDER BY fecharegistro DESC";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                distrito = rs.getString("distrito");
-            }
-            rs.close();
-            ps.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return distrito;
     }
 
     private double obtenerValorPorTamaño(String tamaño) {
@@ -154,7 +152,7 @@ public class ProductoForm extends JFrame {
     }
 
     private double obtenerValorPorDistrito(String distrito) {
-        switch (distrito.toLowerCase()) {
+        switch (distrito.trim().toLowerCase()) {
             case "miraflores": return 5.0;
             case "san isidro": return 6.0;
             case "villa el salvador": return 3.0;
