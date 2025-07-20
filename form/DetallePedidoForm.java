@@ -2,13 +2,13 @@ package veloxapp.form;
 
 import veloxapp.manager.DetallePedidoManager;
 import veloxapp.modelo.DetallePedido;
-
 import javax.swing.*;
 import java.awt.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
+import java.util.Collections;
+import java.util.List;
 import veloxapp.conexion.conexionBD;
 
 public class DetallePedidoForm extends JFrame {
@@ -94,7 +94,7 @@ public class DetallePedidoForm extends JFrame {
         });
         btnCerrar.addActionListener(e -> dispose());
         btnSiguiente.addActionListener(e -> {
-            new EntregaForm().setVisible(true);
+            new veloxapp.form.EntregaForm().setVisible(true);
             dispose();
         });
 
@@ -105,11 +105,17 @@ public class DetallePedidoForm extends JFrame {
     private void cargarDatos() {
         DetallePedidoManager manager = new DetallePedidoManager();
 
+        // Cargar pedidos en orden inverso
         comboPedido.removeAllItems();
-        for (String p : manager.obtenerIdsPedidos()) comboPedido.addItem(p);
+        List<String> pedidos = manager.obtenerIdsPedidos();
+        Collections.reverse(pedidos);
+        for (String p : pedidos) comboPedido.addItem(p);
 
+        // Cargar productos en orden inverso
         comboProducto.removeAllItems();
-        for (ProductoInfo pr : manager.obtenerProductosInfo()) {
+        List<ProductoInfo> productos = manager.obtenerProductosInfo();
+        Collections.reverse(productos);
+        for (ProductoInfo pr : productos) {
             comboProducto.addItem(new ProductoItem(pr.id, pr.nombre));
         }
     }
@@ -139,7 +145,7 @@ public class DetallePedidoForm extends JFrame {
             DetallePedidoManager manager = new DetallePedidoManager();
             if (manager.insertarDetalle(detalle)) {
                 JOptionPane.showMessageDialog(this, "✅ Detalle registrado con éxito.");
-                new EntregaForm().setVisible(true);
+                new veloxapp.form.EntregaForm().setVisible(true);
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "❌ Error al registrar.", "Error", JOptionPane.ERROR_MESSAGE);

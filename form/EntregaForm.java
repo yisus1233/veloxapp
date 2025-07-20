@@ -84,7 +84,7 @@ public class EntregaForm extends JFrame {
         // Nuevo botón para reiniciar el flujo
         btnInicio.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "🔁 Iniciando nuevo flujo desde Cliente.");
-            new ClienteForm().setVisible(true);
+            new veloxapp.form.ClienteForm().setVisible(true);
             dispose();
         });
     }

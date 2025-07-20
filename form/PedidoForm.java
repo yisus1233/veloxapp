@@ -8,6 +8,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class PedidoForm extends JFrame {
 
@@ -94,14 +97,20 @@ public class PedidoForm extends JFrame {
 
     private void cargarClientes() {
         comboClientes.removeAllItems();
+        List<ClienteItem> lista = new ArrayList<>();
         try (Connection conn = conexionBD.conectar();
              Statement st = conn.createStatement();
              ResultSet rs = st.executeQuery("SELECT idcliente, nombre FROM Cliente")) {
             while (rs.next()) {
-                comboClientes.addItem(new ClienteItem(rs.getString("idcliente"), rs.getString("nombre")));
+                lista.add(new ClienteItem(rs.getString("idcliente"), rs.getString("nombre")));
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        // Invertir la lista antes de cargarla al combo
+        Collections.reverse(lista);
+        for (ClienteItem ci : lista) {
+            comboClientes.addItem(ci);
         }
     }
 
