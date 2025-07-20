@@ -49,8 +49,9 @@ public class ReportePanel extends JPanel {
 
         panelArriba.add(comboTipoReporte, BorderLayout.WEST);
 
+
         // Panel para filtros dinámicos
-        panelFiltros = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 2));
+        panelFiltros = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 5));
         panelFiltros.setBackground(new Color(247, 249, 255));
         panelArriba.add(panelFiltros, BorderLayout.CENTER);
 
@@ -129,6 +130,19 @@ public class ReportePanel extends JPanel {
         l.setForeground(new Color(34, 64, 143));
         return l;
     }
+    private java.sql.Date getSpinnerDate(JSpinner spinner) {
+        try {
+            java.util.Date date = (java.util.Date) spinner.getValue();
+            if (date != null) {
+                // Solo devuelve la parte de la fecha, sin hora
+                return new java.sql.Date(date.getTime());
+            }
+        } catch (Exception e) {
+            // Si hay error, retorna null (no filtra por fecha)
+        }
+        return null;
+    }
+
 
     private void cargarReporte() {
         modeloTabla.setRowCount(0); // limpia tabla
@@ -167,7 +181,62 @@ public class ReportePanel extends JPanel {
                     });
                 }
             }
-            // Puedes agregar visualmente los demás casos: Entregas, Productos, Motorizados
+            else if ("Motorizados".equals(tipo)) {
+                modeloTabla.setColumnIdentifiers(new String[]{"ID", "Nombre", "Celular", "Placa"});
+                String sql = "SELECT idmotorizado, nombre, celular, placa FROM Motorizado WHERE nombre LIKE ?";
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, "%" + txtBuscar.getText() + "%");
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    modeloTabla.addRow(new Object[]{
+                            rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4)
+                    });
+                }
+            }
+            else if ("Productos".equals(tipo)) {
+                modeloTabla.setColumnIdentifiers(new String[]{"ID", "Nombre", "Tamaño", "Precio"});
+                String sql = "SELECT idproducto, nombre, tamaño, precio FROM Producto WHERE nombre LIKE ?";
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, "%" + txtBuscar.getText() + "%");
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    modeloTabla.addRow(new Object[]{
+                            rs.getString(1), rs.getString(2), rs.getString(3), rs.getDouble(4)
+                    });
+                }
+            }
+            else if ("Entregas".equals(tipo)) {
+                modeloTabla.setColumnIdentifiers(new String[]{"ID", "Pedido", "Motorizado", "Fecha", "Hora", "Estado"});
+                String sql = "SELECT identrega, idpedido, idmotorizado, fechaentrega, horaentrega, estado FROM Entrega WHERE 1=1";
+
+                // Puedes agregar filtros por estado/fecha si quieres
+                String estado = (String) comboEstado.getSelectedItem();
+                if (!"Todos".equals(estado)) sql += " AND estado = ?";
+
+                java.sql.Date fechaIni = getSpinnerDate(spinnerFechaInicio);
+                java.sql.Date fechaFin = getSpinnerDate(spinnerFechaFin);
+                if (fechaIni != null) sql += " AND fechaentrega >= ?";
+                if (fechaFin != null) sql += " AND fechaentrega <= ?";
+
+                ps = conn.prepareStatement(sql);
+
+                int idx = 1;
+                if (!"Todos".equals(estado)) ps.setString(idx++, estado);
+                if (fechaIni != null) ps.setDate(idx++, fechaIni);
+                if (fechaFin != null) ps.setDate(idx++, fechaFin);
+
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    modeloTabla.addRow(new Object[]{
+                            rs.getString(1), rs.getString(2), rs.getString(3),
+                            rs.getDate(4), rs.getTime(5), rs.getString(6)
+                    });
+                }
+            }
+
+
+
+
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al cargar reporte: " + e.getMessage());
