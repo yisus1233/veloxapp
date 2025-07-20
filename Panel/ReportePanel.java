@@ -39,7 +39,7 @@ public class ReportePanel extends JPanel {
         // --------- PANEL ARRIBA (Combo y filtros) ----------
         JPanel panelArriba = new JPanel(new BorderLayout(12, 0));
         panelArriba.setBackground(new Color(247, 249, 255));
-        panelArriba.setBorder(new EmptyBorder(16, 20, 0, 20));
+        panelArriba.setBorder(new EmptyBorder(30, 20, 0, 20));
 
         comboTipoReporte = new JComboBox<>(new String[]{
                 "Pedidos", "Clientes", "Entregas", "Motorizados", "Productos"
@@ -83,7 +83,7 @@ public class ReportePanel extends JPanel {
         spinnerFechaFin = new JSpinner(new SpinnerDateModel());
         btnBuscar = new JButton("Buscar");
         btnBuscar.setBackground(new Color(34, 64, 143));
-        btnBuscar.setForeground(Color.WHITE);
+        btnBuscar.setForeground(Color.YELLOW);
         btnBuscar.setFont(new Font("Segoe UI Emoji", Font.BOLD, 13));
 
         // --------- EVENTOS ---------
@@ -100,27 +100,29 @@ public class ReportePanel extends JPanel {
         String tipo = (String) comboTipoReporte.getSelectedItem();
         panelFiltros.setOpaque(false);
 
-        if ("Pedidos".equals(tipo) || "Entregas".equals(tipo)) {
+        if ("Pedidos".equals(tipo)) {
             panelFiltros.add(etiqueta("Estado:"));
             panelFiltros.add(comboEstado);
 
-            panelFiltros.add(etiqueta("Fecha inicio:"));
-            spinnerFechaInicio.setPreferredSize(new Dimension(100, 26));
-            panelFiltros.add(spinnerFechaInicio);
-
-            panelFiltros.add(etiqueta("Fecha fin:"));
-            spinnerFechaFin.setPreferredSize(new Dimension(100, 26));
-            panelFiltros.add(spinnerFechaFin);
+            // Botón grande y separado
+            btnBuscar.setPreferredSize(new Dimension(120, 34));
+            panelFiltros.add(Box.createHorizontalStrut(25)); // Espacio
+            panelFiltros.add(btnBuscar);
+        } else if ("Entregas".equals(tipo)) {
+            panelFiltros.add(etiqueta("Estado:"));
+            panelFiltros.add(comboEstado);
+            // Si quieres dejar búsqueda por fechas en entregas, lo dejas aquí. Si no, lo quitas también.
+            btnBuscar.setPreferredSize(new Dimension(120, 34));
+            panelFiltros.add(Box.createHorizontalStrut(25));
+            panelFiltros.add(btnBuscar);
         } else {
             panelFiltros.add(etiqueta("Buscar:"));
             panelFiltros.add(txtBuscar);
+            btnBuscar.setPreferredSize(new Dimension(120, 34));
+            panelFiltros.add(Box.createHorizontalStrut(25));
+            panelFiltros.add(btnBuscar);
         }
-        panelFiltros.add(btnBuscar);
-        panelFiltros.revalidate();
-        panelFiltros.repaint();
 
-        // Carga el reporte
-        cargarReporte();
     }
 
     // Etiquetas con estilo
