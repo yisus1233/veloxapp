@@ -47,7 +47,7 @@ public class ProductoForm extends JFrame {
 
         // Fila 2 - Nombre
         gbc.gridx = 0; gbc.gridy = 1;
-        panel.add(new JLabel("Nombre:"), gbc);
+        panel.add(new JLabel("Detalle Producto:"), gbc);
         gbc.gridx = 1;
         panel.add(txtNombre, gbc);
 
@@ -210,7 +210,7 @@ public class ProductoForm extends JFrame {
 
     private void registrarProducto() {
         try (Connection conn = conexionBD.conectar()) {
-            String sql = "INSERT INTO Producto (idproducto, Detalle Producto, tamaño, precio) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO Producto (idproducto, nombre, tamaño, precio) VALUES (?, ?, ?, ?)";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, txtId.getText());
             ps.setString(2, txtNombre.getText());
