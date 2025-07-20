@@ -64,13 +64,13 @@ public class ClientePanel extends JPanel {
         // --- Título, subtítulo y línea decorativa ---
         gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 4;
         JLabel lblTitulo = new JLabel("🧑‍💼 Registro de Cliente");
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblTitulo.setFont(new Font("Segoe UI Emoji", Font.BOLD, 22));
         lblTitulo.setForeground(new Color(34, 64, 143));
         card.add(lblTitulo, gbc);
 
         gbc.gridy++;
         JLabel lblSub = new JLabel("Agrega y gestiona tus clientes rápido y fácil. ¡No olvides llenar todos los campos!");
-        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblSub.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
         lblSub.setForeground(new Color(80, 120, 180));
         card.add(lblSub, gbc);
 
@@ -88,46 +88,46 @@ public class ClientePanel extends JPanel {
         gbc.gridy++; gbc.gridx = 0;
         card.add(labelIcon("ID Cliente:", "🔖"), gbc);
         gbc.gridx = 1;
-        txtId = new JTextField(14); txtId.setEditable(false); txtId.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        txtId = new JTextField(14); txtId.setEditable(false); txtId.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 15));
         card.add(txtId, gbc);
 
         gbc.gridx = 2;
         card.add(labelIcon("Nombre:", "👤"), gbc);
         gbc.gridx = 3;
-        txtNombre = new JTextField(14); txtNombre.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        txtNombre = new JTextField(14); txtNombre.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 15));
         card.add(txtNombre, gbc);
 
         // Fila 2: Tienda y Distrito
         gbc.gridy++; gbc.gridx = 0;
         card.add(labelIcon("Tienda:", "🏬"), gbc);
         gbc.gridx = 1;
-        comboTienda = new JComboBox<>(tiendas); comboTienda.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        comboTienda = new JComboBox<>(tiendas); comboTienda.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 15));
         card.add(comboTienda, gbc);
 
         gbc.gridx = 2;
         card.add(labelIcon("Distrito:", "📍"), gbc);
         gbc.gridx = 3;
-        comboDistrito = new JComboBox<>(distritos); comboDistrito.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        comboDistrito = new JComboBox<>(distritos); comboDistrito.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 15));
         card.add(comboDistrito, gbc);
 
         // Fila 3: Dirección y Celular
         gbc.gridy++; gbc.gridx = 0;
         card.add(labelIcon("Dirección:", "🏠"), gbc);
         gbc.gridx = 1;
-        txtDireccion = new JTextField(14); txtDireccion.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        txtDireccion = new JTextField(14); txtDireccion.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 15));
         card.add(txtDireccion, gbc);
 
         gbc.gridx = 2;
         card.add(labelIcon("Celular:", "📱"), gbc);
         gbc.gridx = 3;
-        txtCelular = new JTextField(14); txtCelular.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        txtCelular = new JTextField(14); txtCelular.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 15));
         card.add(txtCelular, gbc);
 
         // Fila 4: Fecha
         gbc.gridy++; gbc.gridx = 0;
         card.add(labelIcon("Fecha de Registro:", "📅"), gbc);
         gbc.gridx = 1;
-        txtFecha = new JTextField(14); txtFecha.setEditable(false); txtFecha.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        txtFecha = new JTextField(14); txtFecha.setEditable(false); txtFecha.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 15));
         card.add(txtFecha, gbc);
 
         // Botones centrados
@@ -160,7 +160,7 @@ public class ClientePanel extends JPanel {
 
     private JLabel labelIcon(String texto, String emoji) {
         JLabel lbl = new JLabel(emoji + " " + texto);
-        lbl.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        lbl.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 15));
         lbl.setForeground(new Color(45, 70, 120));
         return lbl;
     }

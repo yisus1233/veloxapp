@@ -39,13 +39,13 @@ public class ProductoPanel extends JPanel {
         // --- TÍTULO y subtítulo ---
         gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
         JLabel lblTitulo = new JLabel("📦 Registro de Producto");
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblTitulo.setFont(new Font("Segoe UI Emoji", Font.BOLD, 22));
         lblTitulo.setForeground(new Color(22, 54, 120));
         card.add(lblTitulo, gbc);
 
         gbc.gridy++;
         JLabel lblSub = new JLabel("Agrega o edita los productos de tu tienda");
-        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblSub.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
         lblSub.setForeground(new Color(80, 120, 180));
         card.add(lblSub, gbc);
 
@@ -116,7 +116,7 @@ public class ProductoPanel extends JPanel {
     // Label con emoji de icono
     private JLabel labelIcon(String texto, String emoji) {
         JLabel lbl = new JLabel(emoji + " " + texto);
-        lbl.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        lbl.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 15));
         lbl.setForeground(new Color(45, 70, 120));
         return lbl;
     }

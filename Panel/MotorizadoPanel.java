@@ -42,7 +42,7 @@ public class MotorizadoPanel extends JPanel {
 
         // Título grande con emoji (puedes usar tu icono PNG también)
         JLabel lblTitulo = new JLabel("🛵 Registro de Motorizado");
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblTitulo.setFont(new Font("Segoe UI Emoji", Font.BOLD, 22));
         lblTitulo.setForeground(new Color(19, 52, 110));
         gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
@@ -51,7 +51,7 @@ public class MotorizadoPanel extends JPanel {
         // Subtítulo decorativo
         gbc.gridy++;
         JLabel lblSub = new JLabel("Agrega aquí los datos del motorizado");
-        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblSub.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
         lblSub.setForeground(new Color(80, 120, 180));
         card.add(lblSub, gbc);
 
@@ -129,7 +129,7 @@ public class MotorizadoPanel extends JPanel {
     // Label con emoji de icono
     private JLabel labelIcon(String texto, String emoji) {
         JLabel lbl = new JLabel(emoji + " " + texto);
-        lbl.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        lbl.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 15));
         lbl.setForeground(new Color(45, 70, 120));
         return lbl;
     }

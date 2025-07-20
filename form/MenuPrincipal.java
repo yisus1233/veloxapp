@@ -26,7 +26,7 @@ public class MenuPrincipal extends JFrame {
         // PANEL IZQUIERDO (logo + menú)
         // --------------------------
         JPanel panelMenu = new JPanel(new BorderLayout());
-        panelMenu.setBackground(new Color(230, 242, 255));
+        panelMenu.setBackground(new Color(2, 34, 177));
         panelMenu.setPreferredSize(new Dimension(300, 0)); // Ensanchado
 
         // LOGO ARRIBA
@@ -44,13 +44,13 @@ public class MenuPrincipal extends JFrame {
         };
         JButton[] botones = new JButton[nombres.length];
 
-        JPanel panelBotones = new JPanel(new GridLayout(nombres.length, 1, 0, 15));
+        JPanel panelBotones = new JPanel(new GridLayout(nombres.length, 10, 0, 20));
         panelBotones.setOpaque(false);
 
         for (int i = 0; i < nombres.length; i++) {
             botones[i] = new JButton(nombres[i]);
-            botones[i].setFont(new Font("Segoe UI", Font.PLAIN, 15));
-            botones[i].setBackground(new Color(241, 245, 255));
+            botones[i].setFont(new Font("Segoe UI Emoji", Font.PLAIN, 15));
+            botones[i].setBackground(new Color(253, 232, 1, 255));
             botones[i].setFocusPainted(false);
             panelBotones.add(botones[i]);
         }
@@ -66,7 +66,7 @@ public class MenuPrincipal extends JFrame {
         // PANEL DERECHO (contenido dinámico)
         // --------------------------
         panelContenido = new JPanel(new BorderLayout());
-        panelContenido.setBackground(new Color(247, 249, 255));
+        panelContenido.setBackground(new Color(253, 248, 1));
         panelContenido.add(
                 new JLabel("<html><div style='font-size:22px;color:#22408f;text-align:center;'>Bienvenido al sistema Velox-Lima!</div></html>", JLabel.CENTER),
                 BorderLayout.CENTER

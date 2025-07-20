@@ -30,7 +30,7 @@ public class ReportePanel extends JPanel {
         barra.setBackground(new Color(34, 64, 143));
         barra.setPreferredSize(new Dimension(100, 54));
         JLabel lblTitulo = new JLabel("Reportes del Sistema", JLabel.LEFT);
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 23));
+        lblTitulo.setFont(new Font("Segoe UI Emoji", Font.BOLD, 23));
         lblTitulo.setForeground(Color.WHITE);
         lblTitulo.setBorder(new EmptyBorder(0, 22, 0, 0));
         barra.add(lblTitulo, BorderLayout.WEST);
@@ -44,7 +44,7 @@ public class ReportePanel extends JPanel {
         comboTipoReporte = new JComboBox<>(new String[]{
                 "Pedidos", "Clientes", "Entregas", "Motorizados", "Productos"
         });
-        comboTipoReporte.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        comboTipoReporte.setFont(new Font("Segoe UI Emoji", Font.BOLD, 15));
         comboTipoReporte.setPreferredSize(new Dimension(180, 34));
 
         panelArriba.add(comboTipoReporte, BorderLayout.WEST);
@@ -59,8 +59,8 @@ public class ReportePanel extends JPanel {
         // --------- TABLA DE REPORTE ----------
         modeloTabla = new DefaultTableModel();
         tablaReporte = new JTable(modeloTabla);
-        tablaReporte.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
-        tablaReporte.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        tablaReporte.getTableHeader().setFont(new Font("Segoe UI Emoji", Font.BOLD, 14));
+        tablaReporte.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 13));
         tablaReporte.setRowHeight(28);
         tablaReporte.setGridColor(new Color(220, 220, 240));
         tablaReporte.setShowGrid(true);
@@ -75,15 +75,15 @@ public class ReportePanel extends JPanel {
 
         // --------- FILTROS ---------
         txtBuscar = new JTextField(14);
-        txtBuscar.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        txtBuscar.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 13));
         comboEstado = new JComboBox<>(new String[]{"Todos", "Recepcionado", "En ruta", "Entregado", "Cancelado"});
-        comboEstado.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        comboEstado.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 13));
         spinnerFechaInicio = new JSpinner(new SpinnerDateModel());
         spinnerFechaFin = new JSpinner(new SpinnerDateModel());
         btnBuscar = new JButton("Buscar");
         btnBuscar.setBackground(new Color(34, 64, 143));
         btnBuscar.setForeground(Color.WHITE);
-        btnBuscar.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btnBuscar.setFont(new Font("Segoe UI Emoji", Font.BOLD, 13));
 
         // --------- EVENTOS ---------
         comboTipoReporte.addActionListener(e -> actualizarFiltros());
@@ -125,7 +125,7 @@ public class ReportePanel extends JPanel {
     // Etiquetas con estilo
     private JLabel etiqueta(String txt) {
         JLabel l = new JLabel(txt);
-        l.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        l.setFont(new Font("Segoe UI Emoji", Font.BOLD, 13));
         l.setForeground(new Color(34, 64, 143));
         return l;
     }

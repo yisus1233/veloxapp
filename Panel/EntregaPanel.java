@@ -44,13 +44,13 @@ public class EntregaPanel extends JPanel {
         // Título y subtítulo
         gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 4;
         JLabel lblTitulo = new JLabel("🚚 Registro de Entrega");
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblTitulo.setFont(new Font("Segoe UI Emoji", Font.BOLD, 22));
         lblTitulo.setForeground(new Color(34, 64, 143));
         card.add(lblTitulo, gbc);
 
         gbc.gridy++;
         JLabel lblSub = new JLabel("Asigna motorizados y registra el estado de entrega fácilmente.");
-        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblSub.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
         lblSub.setForeground(new Color(80, 120, 180));
         card.add(lblSub, gbc);
 
@@ -126,7 +126,7 @@ public class EntregaPanel extends JPanel {
 
     private JLabel labelIcon(String texto, String emoji) {
         JLabel lbl = new JLabel(emoji + " " + texto);
-        lbl.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        lbl.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 15));
         lbl.setForeground(new Color(45, 70, 120));
         return lbl;
     }
