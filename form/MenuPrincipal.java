@@ -1,12 +1,13 @@
 package form;
 
+
 import Panel.ClientePanel;
 import Panel.MotorizadoPanel;
 import Panel.ProductoPanel;
 import Panel.PedidoPanel;
 import Panel.DetallePedidoPanel;
 import Panel.EntregaPanel;
-// import Panel.ReportesPanel; // si luego lo creas
+import Panel.ReportePanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -83,6 +84,8 @@ public class MenuPrincipal extends JFrame {
         botones[3].addActionListener(e -> mostrarPanel(new PedidoPanel()));
         botones[4].addActionListener(e -> mostrarPanel(new DetallePedidoPanel()));
         botones[5].addActionListener(e -> mostrarPanel(new EntregaPanel()));
+        botones[6].addActionListener(e -> mostrarPanel(new ReportePanel())); // ya listo
+
         // botones[6].addActionListener(e -> mostrarPanel(new ReportesPanel())); // si tienes panel reportes
 
         // Puedes desactivar el botón de reportes si aún no está listo
