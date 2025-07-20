@@ -17,45 +17,71 @@ public class ProductoPanel extends JPanel {
         setBackground(new Color(247, 249, 255));
         setLayout(new GridBagLayout());
 
-        GridBagConstraints gbcRoot = new GridBagConstraints();
-
-        // CARD central
-        JPanel card = new JPanel(new GridBagLayout());
-        card.setBackground(Color.WHITE);
-        card.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(34, 64, 143), 1, true),
-                BorderFactory.createEmptyBorder(26, 32, 26, 32))
-        );
+        // --- CARD moderno ---
+        JPanel card = new JPanel(new GridBagLayout()) {
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setColor(new Color(255, 255, 255, 242));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 34, 34);
+                g2.dispose();
+            }
+        };
+        card.setOpaque(false);
+        card.setPreferredSize(new Dimension(480, 340));
+        card.setBorder(BorderFactory.createEmptyBorder(28, 38, 20, 38));
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.insets = new Insets(12, 12, 12, 12);
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
+        // --- TÍTULO y subtítulo ---
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+        JLabel lblTitulo = new JLabel("📦 Registro de Producto");
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblTitulo.setForeground(new Color(22, 54, 120));
+        card.add(lblTitulo, gbc);
+
+        gbc.gridy++;
+        JLabel lblSub = new JLabel("Agrega o edita los productos de tu tienda");
+        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblSub.setForeground(new Color(80, 120, 180));
+        card.add(lblSub, gbc);
+
+        gbc.gridy++;
+        JSeparator sep = new JSeparator();
+        sep.setForeground(new Color(210, 210, 240));
+        sep.setPreferredSize(new Dimension(360, 2));
+        card.add(sep, gbc);
+
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+
         // ID Producto
-        gbc.gridy = 0; gbc.gridx = 0;
-        card.add(new JLabel("ID Producto:"), gbc);
+        gbc.gridy++; gbc.gridx = 0;
+        card.add(labelIcon("ID Producto:", "🔖"), gbc);
         gbc.gridx = 1;
         txtId = new JTextField(16); txtId.setEditable(false);
         card.add(txtId, gbc);
 
         // Detalle Producto
         gbc.gridy++; gbc.gridx = 0;
-        card.add(new JLabel("Detalle Producto:"), gbc);
+        card.add(labelIcon("Detalle Producto:", "📋"), gbc);
         gbc.gridx = 1;
         txtNombre = new JTextField(16);
         card.add(txtNombre, gbc);
 
         // Tamaño
         gbc.gridy++; gbc.gridx = 0;
-        card.add(new JLabel("Tamaño:"), gbc);
+        card.add(labelIcon("Tamaño:", "📏"), gbc);
         gbc.gridx = 1;
         comboTamaño = new JComboBox<>(new String[]{"Pequeño", "Mediano", "Grande"});
         card.add(comboTamaño, gbc);
 
         // Precio
         gbc.gridy++; gbc.gridx = 0;
-        card.add(new JLabel("Precio:"), gbc);
+        card.add(labelIcon("Precio:", "💲"), gbc);
         gbc.gridx = 1;
         txtPrecio = new JTextField(16); txtPrecio.setEditable(false);
         card.add(txtPrecio, gbc);
@@ -63,7 +89,7 @@ public class ProductoPanel extends JPanel {
         // Botones
         gbc.gridy++; gbc.gridx = 0; gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
-        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 24, 0));
         btnRegistrar = new JButton("Registrar");
         btnLimpiar = new JButton("Limpiar");
         panelBotones.setOpaque(false);
@@ -71,19 +97,10 @@ public class ProductoPanel extends JPanel {
         panelBotones.add(btnLimpiar);
         card.add(panelBotones, gbc);
 
-        // Título arriba del card
-        JPanel panelTitulo = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panelTitulo.setOpaque(false);
-        JLabel lblTitulo = new JLabel("Registro de Producto");
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblTitulo.setForeground(new Color(34, 64, 143));
-        panelTitulo.add(lblTitulo);
-
-        gbcRoot.gridx = 0; gbcRoot.gridy = 0; gbcRoot.anchor = GridBagConstraints.NORTH;
-        gbcRoot.insets = new Insets(15, 0, 12, 0);
-        add(panelTitulo, gbcRoot);
-
-        gbcRoot.gridy = 1; gbcRoot.weighty = 1; gbcRoot.anchor = GridBagConstraints.CENTER;
+        // --- Centrar el card en el panel principal ---
+        GridBagConstraints gbcRoot = new GridBagConstraints();
+        gbcRoot.gridx = 0; gbcRoot.gridy = 0; gbcRoot.weightx = 1; gbcRoot.weighty = 1;
+        gbcRoot.anchor = GridBagConstraints.CENTER;
         add(card, gbcRoot);
 
         generarNuevoId();
@@ -96,6 +113,14 @@ public class ProductoPanel extends JPanel {
         });
     }
 
+    // Label con emoji de icono
+    private JLabel labelIcon(String texto, String emoji) {
+        JLabel lbl = new JLabel(emoji + " " + texto);
+        lbl.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        lbl.setForeground(new Color(45, 70, 120));
+        return lbl;
+    }
+
     private void generarNuevoId() {
         try (Connection conn = conexionBD.conectar();
              PreparedStatement ps = conn.prepareStatement("SELECT TOP 1 idproducto FROM Producto ORDER BY idproducto DESC");
@@ -103,8 +128,8 @@ public class ProductoPanel extends JPanel {
 
             String nuevoId;
             if (rs.next()) {
-                String ultimoId = rs.getString("idproducto"); // Por ejemplo "Po007"
-                int numero = Integer.parseInt(ultimoId.replaceAll("\\D", "")) + 1; // Extrae solo números
+                String ultimoId = rs.getString("idproducto");
+                int numero = Integer.parseInt(ultimoId.replaceAll("\\D", "")) + 1;
                 nuevoId = String.format("Po%03d", numero);
             } else {
                 nuevoId = "Po001";

@@ -22,50 +22,76 @@ public class EntregaPanel extends JPanel {
         setBackground(new Color(247, 249, 255));
         setLayout(new GridBagLayout());
 
-        GridBagConstraints gbcRoot = new GridBagConstraints();
-
-        // CARD central
-        JPanel card = new JPanel(new GridBagLayout());
-        card.setBackground(Color.WHITE);
-        card.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(34, 64, 143), 1, true),
-                BorderFactory.createEmptyBorder(24, 32, 24, 32))
-        );
+        // Card con fondo moderno y redondeado
+        JPanel card = new JPanel(new GridBagLayout()) {
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setColor(new Color(255, 255, 255, 247));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 36, 36);
+                g2.dispose();
+            }
+        };
+        card.setOpaque(false);
+        card.setPreferredSize(new Dimension(520, 280));
+        card.setBorder(BorderFactory.createEmptyBorder(24, 34, 24, 34));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 12, 10, 12);
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Fila 1
-        gbc.gridy = 0; gbc.gridx = 0;
-        card.add(new JLabel("ID Entrega:"), gbc);
+        // Título y subtítulo
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 4;
+        JLabel lblTitulo = new JLabel("🚚 Registro de Entrega");
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblTitulo.setForeground(new Color(34, 64, 143));
+        card.add(lblTitulo, gbc);
+
+        gbc.gridy++;
+        JLabel lblSub = new JLabel("Asigna motorizados y registra el estado de entrega fácilmente.");
+        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblSub.setForeground(new Color(80, 120, 180));
+        card.add(lblSub, gbc);
+
+        gbc.gridy++;
+        JSeparator sep = new JSeparator();
+        sep.setForeground(new Color(210, 210, 240));
+        sep.setPreferredSize(new Dimension(400, 2));
+        card.add(sep, gbc);
+
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+
+        // Fila 1: ID Entrega y Pedido
+        gbc.gridy++; gbc.gridx = 0;
+        card.add(labelIcon("ID Entrega:", "🔖"), gbc);
         gbc.gridx = 1;
-        txtId = new JTextField(12); txtId.setEditable(false);
+        txtId = new JTextField(11); txtId.setEditable(false);
         card.add(txtId, gbc);
 
         gbc.gridx = 2;
-        card.add(new JLabel("ID Pedido:"), gbc);
+        card.add(labelIcon("ID Pedido:", "🧾"), gbc);
         gbc.gridx = 3;
         comboPedido = new JComboBox<>();
         card.add(comboPedido, gbc);
 
-        // Fila 2
+        // Fila 2: Motorizado y Estado
         gbc.gridy++; gbc.gridx = 0;
-        card.add(new JLabel("ID Motorizado:"), gbc);
+        card.add(labelIcon("Motorizado:", "🛵"), gbc);
         gbc.gridx = 1;
         comboMotorizado = new JComboBox<>();
         card.add(comboMotorizado, gbc);
 
         gbc.gridx = 2;
-        card.add(new JLabel("Estado:"), gbc);
+        card.add(labelIcon("Estado:", "📄"), gbc);
         gbc.gridx = 3;
         comboEstado = new JComboBox<>(new String[]{"Entregado", "No entregado", "Cancelado"});
         card.add(comboEstado, gbc);
 
         // Fila 3: botones
         gbc.gridy++; gbc.gridx = 0; gbc.gridwidth = 4; gbc.anchor = GridBagConstraints.CENTER;
-        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 22, 0));
         btnRegistrar = new JButton("Registrar");
         btnLimpiar = new JButton("Limpiar");
         btnInicio = new JButton("Volver al Inicio");
@@ -75,22 +101,13 @@ public class EntregaPanel extends JPanel {
         panelBotones.add(btnInicio);
         card.add(panelBotones, gbc);
 
-        // Título arriba del card
-        JPanel panelTitulo = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panelTitulo.setOpaque(false);
-        JLabel lblTitulo = new JLabel("Registro de Entrega");
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblTitulo.setForeground(new Color(34, 64, 143));
-        panelTitulo.add(lblTitulo);
-
-        gbcRoot.gridx = 0; gbcRoot.gridy = 0; gbcRoot.anchor = GridBagConstraints.NORTH;
-        gbcRoot.insets = new Insets(15, 0, 12, 0);
-        add(panelTitulo, gbcRoot);
-
-        gbcRoot.gridy = 1; gbcRoot.weighty = 1; gbcRoot.anchor = GridBagConstraints.CENTER;
+        // Centrado general
+        GridBagConstraints gbcRoot = new GridBagConstraints();
+        gbcRoot.gridx = 0; gbcRoot.gridy = 0; gbcRoot.weightx = 1; gbcRoot.weighty = 1;
+        gbcRoot.anchor = GridBagConstraints.CENTER;
         add(card, gbcRoot);
 
-        // Lógica
+        // --- Lógica
         cargarCombos();
         generarNuevoId();
 
@@ -98,12 +115,20 @@ public class EntregaPanel extends JPanel {
         btnLimpiar.addActionListener(e -> {
             limpiarCampos();
             generarNuevoId();
+            cargarCombos();
         });
 
         btnInicio.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "🔁 Iniciando nuevo flujo desde Cliente.");
-            // Aquí puedes mandar a tu panel de cliente si tienes referencia al contenedor principal
+            // Aquí podrías lanzar el ClientePanel si tienes referencia
         });
+    }
+
+    private JLabel labelIcon(String texto, String emoji) {
+        JLabel lbl = new JLabel(emoji + " " + texto);
+        lbl.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        lbl.setForeground(new Color(45, 70, 120));
+        return lbl;
     }
 
     private void cargarCombos() {

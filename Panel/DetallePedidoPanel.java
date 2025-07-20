@@ -16,66 +16,107 @@ public class DetallePedidoPanel extends JPanel {
 
     private final JTextField txtId, txtCantidad, txtSubtotal;
     private final JComboBox<String> comboPedido;
-    private final JComboBox<DetallePedidoManager.ProductoInfo> comboProducto; // Usa el tipo del manager
+    private final JComboBox<DetallePedidoManager.ProductoInfo> comboProducto;
     private final JButton btnRegistrar, btnLimpiar, btnSiguiente;
 
     public DetallePedidoPanel() {
-        setLayout(new GridBagLayout());
         setBackground(new Color(247, 249, 255));
+        setLayout(new GridBagLayout());
 
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(Color.WHITE);
-        panel.setBorder(BorderFactory.createTitledBorder("Registro de Detalle de Pedido"));
+        // Card central moderno
+        JPanel card = new JPanel(new GridBagLayout()) {
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setColor(new Color(255, 255, 255, 246));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 36, 36);
+                g2.dispose();
+            }
+        };
+        card.setOpaque(false);
+        card.setPreferredSize(new Dimension(570, 340));
+        card.setBorder(BorderFactory.createEmptyBorder(26, 40, 26, 40));
+
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.insets = new Insets(10, 12, 10, 12);
+        gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        txtId = new JTextField(); txtId.setEditable(false);
-        comboPedido = new JComboBox<>();
-        comboProducto = new JComboBox<>();
-        txtCantidad = new JTextField();
-        txtSubtotal = new JTextField(); txtSubtotal.setEditable(false);
+        // Título y subtítulo
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 4;
+        JLabel lblTitulo = new JLabel("📦 Registro de Detalle de Pedido");
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblTitulo.setForeground(new Color(34, 64, 143));
+        card.add(lblTitulo, gbc);
 
+        gbc.gridy++;
+        JLabel lblSub = new JLabel("Asocia productos y cantidades a tu pedido rápidamente.");
+        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblSub.setForeground(new Color(80, 120, 180));
+        card.add(lblSub, gbc);
+
+        gbc.gridy++;
+        JSeparator sep = new JSeparator();
+        sep.setForeground(new Color(210, 210, 240));
+        sep.setPreferredSize(new Dimension(420, 2));
+        card.add(sep, gbc);
+
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+
+        // Campos — Fila 1: ID Detalle y Pedido
+        gbc.gridy++; gbc.gridx = 0;
+        card.add(labelIcon("ID Detalle:", "🔖"), gbc);
+        gbc.gridx = 1;
+        txtId = new JTextField(10); txtId.setEditable(false);
+        card.add(txtId, gbc);
+
+        gbc.gridx = 2;
+        card.add(labelIcon("ID Pedido:", "🧾"), gbc);
+        gbc.gridx = 3;
+        comboPedido = new JComboBox<>();
+        card.add(comboPedido, gbc);
+
+        // Fila 2: Producto
+        gbc.gridy++; gbc.gridx = 0;
+        card.add(labelIcon("Producto:", "📦"), gbc);
+        gbc.gridx = 1; gbc.gridwidth = 3;
+        comboProducto = new JComboBox<>();
+        card.add(comboProducto, gbc);
+        gbc.gridwidth = 1;
+
+        // Fila 3: Cantidad y Subtotal
+        gbc.gridy++; gbc.gridx = 0;
+        card.add(labelIcon("Cantidad:", "🔢"), gbc);
+        gbc.gridx = 1;
+        txtCantidad = new JTextField(8);
+        card.add(txtCantidad, gbc);
+
+        gbc.gridx = 2;
+        card.add(labelIcon("Subtotal:", "💵"), gbc);
+        gbc.gridx = 3;
+        txtSubtotal = new JTextField(8); txtSubtotal.setEditable(false);
+        card.add(txtSubtotal, gbc);
+
+        // Fila 4: Botones
+        gbc.gridy++; gbc.gridx = 0; gbc.gridwidth = 4; gbc.anchor = GridBagConstraints.CENTER;
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 24, 0));
         btnRegistrar = new JButton("Registrar");
         btnLimpiar = new JButton("Limpiar");
         btnSiguiente = new JButton("Siguiente");
+        panelBotones.setOpaque(false);
+        panelBotones.add(btnRegistrar);
+        panelBotones.add(btnLimpiar);
+        panelBotones.add(btnSiguiente);
+        card.add(panelBotones, gbc);
 
-        // Fila 1
-        gbc.gridx = 0; gbc.gridy = 0;
-        panel.add(new JLabel("ID Detalle:"), gbc);
-        gbc.gridx = 1;
-        panel.add(txtId, gbc);
-        gbc.gridx = 2;
-        panel.add(new JLabel("ID Pedido:"), gbc);
-        gbc.gridx = 3;
-        panel.add(comboPedido, gbc);
+        // Centrado del card
+        GridBagConstraints gbcRoot = new GridBagConstraints();
+        gbcRoot.gridx = 0; gbcRoot.gridy = 0; gbcRoot.weightx = 1; gbcRoot.weighty = 1;
+        gbcRoot.anchor = GridBagConstraints.CENTER;
+        add(card, gbcRoot);
 
-        // Fila 2
-        gbc.gridx = 0; gbc.gridy = 1;
-        panel.add(new JLabel("Producto:"), gbc);
-        gbc.gridx = 1;
-        panel.add(comboProducto, gbc);
-
-        // Fila 3
-        gbc.gridx = 0; gbc.gridy = 2;
-        panel.add(new JLabel("Cantidad:"), gbc);
-        gbc.gridx = 1;
-        panel.add(txtCantidad, gbc);
-        gbc.gridx = 2;
-        panel.add(new JLabel("Subtotal:"), gbc);
-        gbc.gridx = 3;
-        panel.add(txtSubtotal, gbc);
-
-        // Fila 4 (botones)
-        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 4;
-        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
-        btnPanel.add(btnRegistrar);
-        btnPanel.add(btnLimpiar);
-        btnPanel.add(btnSiguiente);
-        panel.add(btnPanel, gbc);
-
-        add(panel, new GridBagConstraints());
-
+        // Lógica
         cargarDatos();
         generarNuevoId();
 
@@ -90,6 +131,13 @@ public class DetallePedidoPanel extends JPanel {
 
         txtCantidad.addCaretListener(e -> calcularSubtotal());
         comboPedido.addActionListener(e -> calcularSubtotal());
+    }
+
+    private JLabel labelIcon(String texto, String emoji) {
+        JLabel lbl = new JLabel(emoji + " " + texto);
+        lbl.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        lbl.setForeground(new Color(45, 70, 120));
+        return lbl;
     }
 
     private void cargarDatos() {
@@ -180,12 +228,5 @@ public class DetallePedidoPanel extends JPanel {
     private void limpiarCampos() {
         txtCantidad.setText("");
         txtSubtotal.setText("");
-    }
-
-    // NO NECESITAS clase ProductoInfo acá,
-    // usa la que ya está en DetallePedidoManager.
-    @Override
-    public String toString() {
-        return "DetallePedidoPanel";
     }
 }

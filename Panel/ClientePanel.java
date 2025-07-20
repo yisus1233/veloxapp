@@ -13,7 +13,6 @@ public class ClientePanel extends JPanel {
     private final JComboBox<String> comboTienda;
     private final JComboBox<DistritoItem> comboDistrito;
     private final JButton btnRegistrar, btnLimpiar;
-
     private boolean clienteRegistrado = false;
 
     private final String[] tiendas = {
@@ -37,86 +36,115 @@ public class ClientePanel extends JPanel {
     };
 
     public ClientePanel() {
-        // Estilo general
         setBackground(new Color(245, 247, 255));
         setLayout(new GridBagLayout());
 
-        // Panel central del formulario, con sombra
-        JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(30, 60, 30, 60),
-                BorderFactory.createLineBorder(new Color(180, 200, 240), 1)
-        ));
-        formPanel.setBackground(Color.white);
+        // Card central blanco con borde y sombra
+        JPanel card = new JPanel(new GridBagLayout()) {
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setColor(new Color(255,255,255, 250));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 36, 36);
+                g2.dispose();
+            }
+        };
+        card.setOpaque(false);
+        card.setPreferredSize(new Dimension(690, 280));
+        card.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(34, 64, 143), 1, true),
+                BorderFactory.createEmptyBorder(28, 36, 28, 36))
+        );
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(12, 18, 12, 18);
+        gbc.insets = new Insets(10, 16, 10, 16);
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        Font labelFont = new Font("Segoe UI", Font.BOLD, 15);
-        Font inputFont = new Font("Segoe UI", Font.PLAIN, 15);
+        // --- Título, subtítulo y línea decorativa ---
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 4;
+        JLabel lblTitulo = new JLabel("🧑‍💼 Registro de Cliente");
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblTitulo.setForeground(new Color(34, 64, 143));
+        card.add(lblTitulo, gbc);
 
-        txtId = new JTextField(15); txtId.setEditable(false); txtId.setFont(inputFont);
-        txtNombre = new JTextField(15); txtNombre.setFont(inputFont);
-        txtDireccion = new JTextField(15); txtDireccion.setFont(inputFont);
-        txtCelular = new JTextField(15); txtCelular.setFont(inputFont);
-        txtFecha = new JTextField(15); txtFecha.setEditable(false); txtFecha.setFont(inputFont);
+        gbc.gridy++;
+        JLabel lblSub = new JLabel("Agrega y gestiona tus clientes rápido y fácil. ¡No olvides llenar todos los campos!");
+        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblSub.setForeground(new Color(80, 120, 180));
+        card.add(lblSub, gbc);
 
-        comboTienda = new JComboBox<>(tiendas); comboTienda.setFont(inputFont);
-        comboDistrito = new JComboBox<>(distritos); comboDistrito.setFont(inputFont);
+        gbc.gridy++;
+        JSeparator sep = new JSeparator();
+        sep.setForeground(new Color(210, 210, 240));
+        sep.setPreferredSize(new Dimension(540, 2));
+        card.add(sep, gbc);
 
-        btnRegistrar = new JButton("Registrar"); btnRegistrar.setFont(inputFont);
-        btnLimpiar = new JButton("Limpiar"); btnLimpiar.setFont(inputFont);
+        // --- Campos del formulario ---
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
 
-        int y = 0;
-        gbc.gridx = 0; gbc.gridy = y;
-        formPanel.add(new JLabel("ID Cliente:") {{ setFont(labelFont); }}, gbc);
+        // Fila 1: ID y Nombre
+        gbc.gridy++; gbc.gridx = 0;
+        card.add(labelIcon("ID Cliente:", "🔖"), gbc);
         gbc.gridx = 1;
-        formPanel.add(txtId, gbc);
+        txtId = new JTextField(14); txtId.setEditable(false); txtId.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        card.add(txtId, gbc);
+
         gbc.gridx = 2;
-        formPanel.add(new JLabel("Nombre:") {{ setFont(labelFont); }}, gbc);
+        card.add(labelIcon("Nombre:", "👤"), gbc);
         gbc.gridx = 3;
-        formPanel.add(txtNombre, gbc);
-        y++;
+        txtNombre = new JTextField(14); txtNombre.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        card.add(txtNombre, gbc);
 
-        gbc.gridx = 0; gbc.gridy = y;
-        formPanel.add(new JLabel("Tienda:") {{ setFont(labelFont); }}, gbc);
+        // Fila 2: Tienda y Distrito
+        gbc.gridy++; gbc.gridx = 0;
+        card.add(labelIcon("Tienda:", "🏬"), gbc);
         gbc.gridx = 1;
-        formPanel.add(comboTienda, gbc);
+        comboTienda = new JComboBox<>(tiendas); comboTienda.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        card.add(comboTienda, gbc);
+
         gbc.gridx = 2;
-        formPanel.add(new JLabel("Distrito:") {{ setFont(labelFont); }}, gbc);
+        card.add(labelIcon("Distrito:", "📍"), gbc);
         gbc.gridx = 3;
-        formPanel.add(comboDistrito, gbc);
-        y++;
+        comboDistrito = new JComboBox<>(distritos); comboDistrito.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        card.add(comboDistrito, gbc);
 
-        gbc.gridx = 0; gbc.gridy = y;
-        formPanel.add(new JLabel("Dirección:") {{ setFont(labelFont); }}, gbc);
+        // Fila 3: Dirección y Celular
+        gbc.gridy++; gbc.gridx = 0;
+        card.add(labelIcon("Dirección:", "🏠"), gbc);
         gbc.gridx = 1;
-        formPanel.add(txtDireccion, gbc);
+        txtDireccion = new JTextField(14); txtDireccion.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        card.add(txtDireccion, gbc);
+
         gbc.gridx = 2;
-        formPanel.add(new JLabel("Celular:") {{ setFont(labelFont); }}, gbc);
+        card.add(labelIcon("Celular:", "📱"), gbc);
         gbc.gridx = 3;
-        formPanel.add(txtCelular, gbc);
-        y++;
+        txtCelular = new JTextField(14); txtCelular.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        card.add(txtCelular, gbc);
 
-        gbc.gridx = 0; gbc.gridy = y;
-        formPanel.add(new JLabel("Fecha de Registro:") {{ setFont(labelFont); }}, gbc);
+        // Fila 4: Fecha
+        gbc.gridy++; gbc.gridx = 0;
+        card.add(labelIcon("Fecha de Registro:", "📅"), gbc);
         gbc.gridx = 1;
-        formPanel.add(txtFecha, gbc);
+        txtFecha = new JTextField(14); txtFecha.setEditable(false); txtFecha.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        card.add(txtFecha, gbc);
 
-        // Botones centrados abajo
-        gbc.gridy = ++y;
-        gbc.gridx = 0;
-        gbc.gridwidth = 4;
-        gbc.anchor = GridBagConstraints.CENTER;
-        JPanel btns = new JPanel();
-        btns.setBackground(Color.white);
-        btns.add(btnRegistrar);
-        btns.add(btnLimpiar);
-        formPanel.add(btns, gbc);
+        // Botones centrados
+        gbc.gridx = 2; gbc.gridwidth = 2; gbc.anchor = GridBagConstraints.CENTER;
+        JPanel panelBtns = new JPanel();
+        panelBtns.setOpaque(false);
+        btnRegistrar = new JButton("Registrar");
+        btnLimpiar = new JButton("Limpiar");
+        panelBtns.add(btnRegistrar);
+        panelBtns.add(btnLimpiar);
+        card.add(panelBtns, gbc);
 
-        add(formPanel, new GridBagConstraints()); // Panel centrado
+        // Centrado general
+        GridBagConstraints gbcRoot = new GridBagConstraints();
+        gbcRoot.gridx = 0; gbcRoot.gridy = 0; gbcRoot.weightx = 1; gbcRoot.weighty = 1;
+        gbcRoot.anchor = GridBagConstraints.CENTER;
+        add(card, gbcRoot);
 
         generarNuevoId();
         cargarFechaActual();
@@ -128,6 +156,13 @@ public class ClientePanel extends JPanel {
             cargarFechaActual();
             clienteRegistrado = false;
         });
+    }
+
+    private JLabel labelIcon(String texto, String emoji) {
+        JLabel lbl = new JLabel(emoji + " " + texto);
+        lbl.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        lbl.setForeground(new Color(45, 70, 120));
+        return lbl;
     }
 
     private void generarNuevoId() {
@@ -172,6 +207,7 @@ public class ClientePanel extends JPanel {
         txtCelular.setText("");
     }
 
+    // --------- Clase interna DistritoItem ----------
     public static class DistritoItem {
         private final String nombre;
         private final int costoEnvio;

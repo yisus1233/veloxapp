@@ -24,57 +24,85 @@ public class PedidoPanel extends JPanel {
         setBackground(new Color(247, 249, 255));
         setLayout(new GridBagLayout());
 
-        GridBagConstraints gbcRoot = new GridBagConstraints();
-
-        // CARD central
-        JPanel card = new JPanel(new GridBagLayout());
-        card.setBackground(Color.WHITE);
-        card.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(34, 64, 143), 1, true),
-                BorderFactory.createEmptyBorder(28, 34, 28, 34))
-        );
+        // ---- CARD central moderno ----
+        JPanel card = new JPanel(new GridBagLayout()) {
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setColor(new Color(255, 255, 255, 246));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 36, 36);
+                g2.dispose();
+            }
+        };
+        card.setOpaque(false);
+        card.setPreferredSize(new Dimension(500, 320));
+        card.setBorder(BorderFactory.createEmptyBorder(28, 38, 22, 38));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 12, 10, 12);
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Fila 1
-        gbc.gridy = 0; gbc.gridx = 0;
-        card.add(new JLabel("ID Pedido:"), gbc);
+        // ---- TÍTULO y subtítulo ----
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 4;
+        JLabel lblTitulo = new JLabel("🧾 Registro de Pedido");
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblTitulo.setForeground(new Color(34, 64, 143));
+        card.add(lblTitulo, gbc);
+
+        gbc.gridy++;
+        JLabel lblSub = new JLabel("Agrega un nuevo pedido al sistema de forma fácil y rápida");
+        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblSub.setForeground(new Color(80, 120, 180));
+        card.add(lblSub, gbc);
+
+        gbc.gridy++;
+        JSeparator sep = new JSeparator();
+        sep.setForeground(new Color(210, 210, 240));
+        sep.setPreferredSize(new Dimension(370, 2));
+        card.add(sep, gbc);
+
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+
+        // ---- CAMPOS ----
+
+        // Fila 1: ID y Fecha
+        gbc.gridy++; gbc.gridx = 0;
+        card.add(labelIcon("ID Pedido:", "🔖"), gbc);
         gbc.gridx = 1;
-        txtId = new JTextField(14); txtId.setEditable(false);
+        txtId = new JTextField(12); txtId.setEditable(false);
         card.add(txtId, gbc);
 
         gbc.gridx = 2;
-        card.add(new JLabel("Fecha:"), gbc);
+        card.add(labelIcon("Fecha:", "📅"), gbc);
         gbc.gridx = 3;
         txtFecha = new JTextField(12); txtFecha.setEditable(false);
         card.add(txtFecha, gbc);
 
-        // Fila 2
+        // Fila 2: Cliente y Estado
         gbc.gridy++; gbc.gridx = 0;
-        card.add(new JLabel("Cliente:"), gbc);
+        card.add(labelIcon("Cliente:", "👤"), gbc);
         gbc.gridx = 1;
         comboClientes = new JComboBox<>();
         card.add(comboClientes, gbc);
 
         gbc.gridx = 2;
-        card.add(new JLabel("Estado:"), gbc);
+        card.add(labelIcon("Estado:", "🚚"), gbc);
         gbc.gridx = 3;
         comboEstado = new JComboBox<>(new String[]{"Recepcionado", "En ruta"});
         card.add(comboEstado, gbc);
 
-        // Fila 3
+        // Fila 3: Total
         gbc.gridy++; gbc.gridx = 0;
-        card.add(new JLabel("Total:"), gbc);
+        card.add(labelIcon("Total:", "💵"), gbc);
         gbc.gridx = 1;
         txtTotal = new JTextField(10); txtTotal.setEditable(false);
         card.add(txtTotal, gbc);
 
-        // Fila 4: botones
+        // Fila 4: Botones
         gbc.gridy++; gbc.gridx = 0; gbc.gridwidth = 4; gbc.anchor = GridBagConstraints.CENTER;
-        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 24, 0));
         btnRegistrar = new JButton("Registrar");
         btnLimpiar = new JButton("Limpiar");
         panelBotones.setOpaque(false);
@@ -82,22 +110,13 @@ public class PedidoPanel extends JPanel {
         panelBotones.add(btnLimpiar);
         card.add(panelBotones, gbc);
 
-        // Título arriba del card
-        JPanel panelTitulo = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panelTitulo.setOpaque(false);
-        JLabel lblTitulo = new JLabel("Registro de Pedido");
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblTitulo.setForeground(new Color(34, 64, 143));
-        panelTitulo.add(lblTitulo);
-
-        gbcRoot.gridx = 0; gbcRoot.gridy = 0; gbcRoot.anchor = GridBagConstraints.NORTH;
-        gbcRoot.insets = new Insets(15, 0, 12, 0);
-        add(panelTitulo, gbcRoot);
-
-        gbcRoot.gridy = 1; gbcRoot.weighty = 1; gbcRoot.anchor = GridBagConstraints.CENTER;
+        // ---- Centrado del card en el panel principal ----
+        GridBagConstraints gbcRoot = new GridBagConstraints();
+        gbcRoot.gridx = 0; gbcRoot.gridy = 0; gbcRoot.weightx = 1; gbcRoot.weighty = 1;
+        gbcRoot.anchor = GridBagConstraints.CENTER;
         add(card, gbcRoot);
 
-        // Lógica
+        // ---- Lógica de negocio ----
         generarNuevoId();
         cargarClientes();
         cargarFechaActual();
@@ -111,6 +130,14 @@ public class PedidoPanel extends JPanel {
             cargarFechaActual();
         });
         comboEstado.addActionListener(e -> calcularTotalPorEstado());
+    }
+
+    // Label con emoji para consistencia visual
+    private JLabel labelIcon(String texto, String emoji) {
+        JLabel lbl = new JLabel(emoji + " " + texto);
+        lbl.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        lbl.setForeground(new Color(45, 70, 120));
+        return lbl;
     }
 
     private void generarNuevoId() {
@@ -195,6 +222,7 @@ public class PedidoPanel extends JPanel {
         txtTotal.setText("0.00");
     }
 
+    // -------- Clase interna para combo Cliente --------
     public static class ClienteItem {
         private final String id;
         private final String nombre;
@@ -207,7 +235,6 @@ public class PedidoPanel extends JPanel {
         public String getId() {
             return id;
         }
-
         public String toString() {
             return nombre;
         }
